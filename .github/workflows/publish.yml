@@ -33,8 +33,18 @@ jobs:
           run_install: false
 
       - name: Install
-        run: pnpm install --frozen-lockfile
-        working-directory: packages/motion-plus-installer
+        run: |
+          echo "Checking for pnpm lockfiles..."
+          if [ -f pnpm-lock.yaml ]; then
+            echo "Found root pnpm-lock.yaml — installing workspace with frozen lockfile"
+            pnpm install --frozen-lockfile
+          elif [ -f packages/motion-plus-installer/pnpm-lock.yaml ]; then
+            echo "Found package pnpm-lock.yaml — installing package with frozen lockfile"
+            pnpm install --frozen-lockfile --filter ./packages/motion-plus-installer...
+          else
+            echo "No pnpm-lock.yaml found; installing package without frozen-lockfile (CI default may fail)"
+            pnpm install --no-frozen-lockfile --filter ./packages/motion-plus-installer...
+          fi
 
       - name: Build
         run: pnpm run build
