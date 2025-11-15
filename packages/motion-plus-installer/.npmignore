@@ -1,0 +1,9 @@
+src
+test
+minify.js
+*.md
+docs/
+**.tgz
+build.mjs
+tsconfig.build.json
+tsconfig.json

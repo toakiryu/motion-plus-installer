@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Motion Installer — コマンドジェネレーター</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+    body{max-width:880px;margin:32px auto;padding:0 20px;color:#111}
+    h1{font-size:1.6rem;margin-bottom:.2rem}
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
+    .card{border:1px solid #eee;padding:16px;border-radius:8px;background:#fff}
+    label{display:block;font-size:.9rem;margin-bottom:6px}
+    input[type=text], input[type=number], select{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+    .options{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .btn-toggle{padding:8px 10px;border-radius:6px;border:1px solid #ccc;background:#f7f7f7;cursor:pointer}
+    .btn-toggle.active{background:#0366d6;color:#fff;border-color:#0366d6}
+    pre{background:#0f1720;color:#e6eef8;padding:12px;border-radius:6px;overflow:auto}
+    .small{font-size:.85rem;color:#555}
+    .row{display:flex;gap:8px}
+    .copy{margin-top:8px}
+    footer{margin-top:24px;font-size:.85rem;color:#666}
+  </style>
+</head>
+<body>
+  <h1>Motion Installer — コマンドジェネレーター</h1>
+  <p class="small">UI で主要オプションを切り替えて、実行するコマンドを生成します。生成されたコマンドはコピーできます。<br>トークンは表示せず、環境変数経由で渡すことを推奨します。</p>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <label>ターゲットパッケージ名</label>
+        <input id="pkg" type="text" value="motion-plus" />
+
+        <label style="margin-top:10px">バージョン (省略可)</label>
+        <input id="version" type="text" placeholder="例: 2.0.0" />
+
+        <label style="margin-top:10px">pnpm コマンド</label>
+        <input id="pnpmCmd" type="text" value="pnpm" />
+
+        <div style="margin-top:12px">
+          <label>オプション</label>
+          <div class="options" id="toggles">
+            <button class="btn-toggle" data-opt="force">--force</button>
+            <button class="btn-toggle active" data-opt="keep">--keep (保持)</button>
+            <button class="btn-toggle" data-opt="no-keep">--no-keep</button>
+            <button class="btn-toggle" data-opt="global">グローバルにインストール (CLI インストール用)</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>再試行回数</label>
+          <input id="retry" type="number" min="0" value="2" />
+        </div>
+
+        <div style="margin-top:12px">
+          <label>一時的に `.env` を使う（dotenv-cli）</label>
+          <div class="row">
+            <input id="useDotenv" type="checkbox" />
+            <input id="envFile" type="text" value=".env" style="width:160px" />
+          </div>
+          <p class="small">チェックを入れると、コマンド前に <code>npx dotenv-cli -e &lt;env&gt; --</code> が付与されます。</p>
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3 style="margin:0 0 8px 0">CLI インストールコマンド</h3>
+        <pre id="installCmd">pnpm add --save-dev motion-plus-installer</pre>
+        <button id="copyInstall" class="copy">コピー</button>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3 style="margin:0 0 8px 0">インストーラー実行コマンド</h3>
+        <pre id="runCmd">npx motion-plus-installer -p motion-plus</pre>
+        <button id="copyRun" class="copy">コピー</button>
+      </div>
+    </div>
+
+    <aside>
+      <div class="card">
+        <h3 style="margin-top:0">説明</h3>
+        <p class="small">- 上の「インストーラー実行コマンド」は、実際に <code>motion-plus-installer</code> を実行するためのコマンドです。<br>- トークンは環境変数 <code>MOTION_TOKEN</code> で渡すことを推奨します。ログに値は出力されません。</p>
+
+        <h4>例</h4>
+        <p class="small">ローカル検証（.env を使う場合）:</p>
+        <pre>npx dotenv-cli -e .env -- npx motion-plus-installer -p motion-plus -v 2.0.0</pre>
+
+        <p class="small">CI の場合はシークレットを使って環境変数を注入してください。</p>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h4 style="margin-top:0">注意</h4>
+        <p class="small">- `--pnpm-cmd` を変更する場合、CI 環境で利用可能なコマンド名を指定してください。<br>- `--no-keep` を使うとダウンロードした .tgz は削除されます。</p>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <p class="small">このページはローカルで静的に開いて利用できます。サーバで配信する場合は `docs/install-generator/index.html` を配信してください。</p>
+  </footer>
+
+  <script>
+    const el = id => document.getElementById(id)
+    const toggles = document.querySelectorAll('.btn-toggle')
+    const state = { force:false, keep:true, 'no-keep':false, global:false }
+
+    toggles.forEach(btn=>btn.addEventListener('click',()=>{
+      const k = btn.dataset.opt
+      if(k==='keep'){
+        state.keep = !state.keep
+        state['no-keep'] = !state.keep
+        // update classes
+        toggles.forEach(b=>{ if(b.dataset.opt==='keep') b.classList.toggle('active', state.keep); if(b.dataset.opt==='no-keep') b.classList.toggle('active', state['no-keep']) })
+      } else if(k==='no-keep'){
+        state['no-keep'] = !state['no-keep']
+        state.keep = !state['no-keep']
+        toggles.forEach(b=>{ if(b.dataset.opt==='keep') b.classList.toggle('active', state.keep); if(b.dataset.opt==='no-keep') b.classList.toggle('active', state['no-keep']) })
+      } else {
+        state[k] = !state[k]
+        btn.classList.toggle('active', state[k])
+      }
+      build()
+    }))
+
+    el('pkg').addEventListener('input', build)
+    el('version').addEventListener('input', build)
+    el('pnpmCmd').addEventListener('input', build)
+    el('retry').addEventListener('input', build)
+    el('useDotenv').addEventListener('change', build)
+    el('envFile').addEventListener('input', build)
+
+    function build(){
+      const pkg = el('pkg').value.trim() || 'motion-plus'
+      const ver = el('version').value.trim()
+      const pnpmCmd = el('pnpmCmd').value.trim() || 'pnpm'
+      const retry = Number(el('retry').value) || 0
+      const useDotenv = el('useDotenv').checked
+      const envFile = el('envFile').value.trim() || '.env'
+
+      // Install CLI command
+      const installCli = state.global ? `${pnpmCmd} add -g motion-plus-installer` : `${pnpmCmd} add --save-dev motion-plus-installer`
+      el('installCmd').textContent = installCli
+
+      // Build run command
+      const parts = ['npx motion-plus-installer']
+      parts.push('-p', shellEscape(pkg))
+      if(ver) parts.push('-v', shellEscape(ver))
+      if(state.force) parts.push('--force')
+      if(state['no-keep']) parts.push('--no-keep')
+      if(retry>0) parts.push('--retry', String(retry))
+      // always show pnpm-cmd only if not default? we include it for clarity
+      if(pnpmCmd && pnpmCmd!=='pnpm') parts.push('--pnpm-cmd', shellEscape(pnpmCmd))
+
+      let run = parts.join(' ')
+      if(useDotenv) run = `npx dotenv-cli -e ${shellEscape(envFile)} -- ${run}`
+
+      el('runCmd').textContent = run
+    }
+
+    function shellEscape(s){
+      if (!s) return "''"
+      if (/[^A-Za-z0-9_\-:\/.]/.test(s)) return '"'+s.replace(/"/g,'\\"')+'"'
+      return s
+    }
+
+    // copy buttons
+    el('copyInstall').addEventListener('click',async()=>{ await copyText(el('installCmd').textContent); alert('コピーしました') })
+    el('copyRun').addEventListener('click',async()=>{ await copyText(el('runCmd').textContent); alert('コピーしました') })
+
+    async function copyText(text){
+      try{ await navigator.clipboard.writeText(text) }catch(e){
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove()
+      }
+    }
+
+    // init
+    build()
+  </script>
+</body>
+</html>

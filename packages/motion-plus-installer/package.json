@@ -1,0 +1,47 @@
+{
+  "name": "motion-plus-installer",
+  "version": "0.0.1-beta.0",
+  "description": "Lightweight CLI to install Motion+ packages",
+  "bin": {
+    "motion-plus-installer": "dist/cjs/installer.js",
+    "motion-inst": "dist/cjs/installer.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "pnpm run build",
+    "build": "node ./build.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.1",
+    "esbuild": "^0.27.0",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [
+    "motion-plus",
+    "installer",
+    "cli"
+  ],
+  "author": {
+    "name": "Toa Kiryu",
+    "url": "https://github.com/toakiryu"
+  },
+  "homepage": "https://github.com/toakiryu/motion-plus-installer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toakiryu/motion-plus-installer.git",
+    "directory": "packages/motion-plus-installer"
+  },
+  "bugs": {
+    "url": "https://github.com/toakiryu/motion-plus-installer/issues"
+  },
+  "license": "MIT",
+  "packageManager": "pnpm@10.22.0"
+}

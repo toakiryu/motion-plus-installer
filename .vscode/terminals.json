@@ -1,0 +1,14 @@
+{
+  "autorun": true,
+  "autokill": true,
+  "terminals": [
+    {
+      "name": "root",
+      "cwd": "./"
+    },
+    {
+      "name": "pkg : motion-plus-installer",
+      "cwd": "./packages/motion-plus-installer"
+    }
+  ]
+}
