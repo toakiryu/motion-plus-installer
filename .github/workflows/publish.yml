@@ -28,6 +28,9 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
+        with:
+          package_json_file: packages/motion-plus-installer/package.json
+          run_install: false
 
       - name: Install
         run: pnpm install --frozen-lockfile
