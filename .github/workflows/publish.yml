@@ -7,6 +7,14 @@ on:
       - "main"
     paths:
       - "packages/motion-plus-installer/package.json"
+  workflow_dispatch:
+    inputs:
+      publishTag:
+        description: 'Optional: force the publish dist-tag (e.g. latest, beta, rc)'
+        required: false
+      version:
+        description: 'Optional: override package.json version for tag detection (e.g. 1.2.3 or 1.2.3-beta)'
+        required: false
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -32,12 +40,24 @@ jobs:
       - name: Determine publish tag
         id: publish-tag
         run: |
-          VERSION=$(node -p "require('./packages/motion-plus-installer/package.json').version")
+          # Prefer explicit publishTag input when provided
+          if [ -n "${{ github.event.inputs.publishTag }}" ]; then
+            TAG="${{ github.event.inputs.publishTag }}"
+            echo "Using publishTag input: $TAG"
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Determine version: prefer workflow input override, otherwise read package.json
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=$(node -p "require('./packages/motion-plus-installer/package.json').version")
+          fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+
           if [[ "$VERSION" == *-* ]]; then
-            # Extract the prerelease identifier portion after the first '-'
             PRERELEASE="${VERSION#*-}"
-            # Use the portion before the first '.' as the dist-tag (e.g. 'beta' from 'beta.1')
             TAG="${PRERELEASE%%.*}"
             echo "Detected prerelease tag: $TAG"
             echo "tag=$TAG" >> $GITHUB_OUTPUT
