@@ -7,6 +7,10 @@
       "cwd": "./"
     },
     {
+      "name": "website",
+      "cwd": "./website"
+    },
+    {
       "name": "pkg : motion-plus-installer",
       "cwd": "./packages/motion-plus-installer"
     },
