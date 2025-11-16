@@ -66,7 +66,7 @@ pnpm add "C:\path\to\motion-plus-installer-0.1.0.tgz"
 - `--force` : 既存ファイルを上書きして再ダウンロード
 - `--retry <n>` : ダウンロード再試行回数（デフォルト 2）
 - `--out <path>` : 直接出力ファイルパスを指定（`node_modules` 自動接頭なし）
-- `--pnpm-cmd <cmd>` : `pnpm` 実行コマンド（デフォルト `pnpm`）
+- `--pm-cmd <cmd>` : パッケージマネージャ実行コマンド（例: `pnpm`, `npm`, `yarn`）。互換性のため `--pnpm-cmd` も受け付けます。
 - `--proxy <url>` : HTTP(S) プロキシ
 - `-q, --quiet` : 最小ログ
 - `--no-pretty` : 色付け / パス短縮などを無効化
@@ -91,12 +91,25 @@ pnpm add "C:\path\to\motion-plus-installer-0.1.0.tgz"
 ## ビルド & 配布
 
 - `pnpm run build` で `dist/` にバンドルされた実行ファイルを生成します（配布は `pnpm pack` か `npm publish`）。
-- `prepack` スクリプトで自動的にビルドされるよう設定されています。
+- `prepack` スクリプトはパッケージマネージャに依存しない形に変更され、現在は `node ./build.mjs` を実行してビルドします。
 
 ## テスト
 
 - ユニット: `src` のユーティリティ関数を `node:test` で実行（`pnpm test`）。
-- E2E: `MOTION_REGISTRY_URL` を使いローカル HTTP サーバを立て、実際にダウンロード → `pnpm add ./<file.tgz>` が成功するか確認してください。
+- E2E: `MOTION_REGISTRY_URL` を使いローカル HTTP サーバを立て、実際にダウンロード → パッケージマネージャ（例: `pnpm add` / `npm install`）が成功するか確認してください。
+
+## 実装ノート
+
+- 重要な変更点: パッケージマネージャの検出と実行ロジックを `src/pm.ts` に分離しました。主なエクスポートは次のとおりです。
+  - `detectPackageManager(cwd)` : 実行環境とリポジトリを確認して使用すべきパッケージマネージャ名を返します（`npm_config_user_agent`, `npm_execpath`, `package.json#packageManager`, ロックファイル, PATH の順で判定）。
+  - `runPackageManagerAdd(pmCmd, filePath, logger)` : 指定されたパッケージマネージャコマンドでローカル `.tgz` をインストールします（`pnpm`/`yarn` では `add`、`npm` では `install` を使用）。
+
+- `installer.ts` 側では、CLI オプション `--pm-cmd`（旧 `--pnpm-cmd`）を優先し、未指定の場合は `detectPackageManager` が選択を行います。
+
+- テストの推奨:
+  - `src/pm.ts` は spawn 系の副作用を持つため、`child_process.spawn` / `spawnSync` をモックしてユニットテストを作成してください。`detectPackageManager` は各ケース（環境変数、package.json の packageManager、ロックファイル、PATH に存在する実行ファイル）を個別に検証することを推奨します。
+  - `runPackageManagerAdd` は実プロセスを起動するので、呼び出し引数やログを検証するために spawn をスタブ化するテストを用意すると安全です。
+
 
 ## トラブルシューティング
 

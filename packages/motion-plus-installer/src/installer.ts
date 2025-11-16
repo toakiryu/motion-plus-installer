@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { spawn } from "child_process";
+import { spawn, spawnSync } from "child_process";
 import { pipeline } from "stream";
 import { promisify } from "util";
 import { Command } from "commander";
@@ -77,23 +77,7 @@ function makeLogger(quiet: boolean, pretty: boolean) {
 }
 
 import { fileNameFor, storageDirFor, buildUrl, downloadToFile } from "./lib";
-
-async function runPnpmAdd(pnpmCmd: string, filePath: string, logger: any) {
-  const relPath = path.relative(process.cwd(), filePath).replace(/\\/g, "/");
-  const addArg = `./${relPath}`;
-  logger.info(`Running: ${pnpmCmd} add ${addArg}`);
-  return new Promise((resolve, reject) => {
-    const child = spawn(pnpmCmd, ["add", addArg], {
-      stdio: "inherit",
-      shell: false,
-    });
-    child.on("exit", (code) => {
-      if (code === 0) resolve(0);
-      else reject(new Error(`pnpm exited with code ${code}`));
-    });
-    child.on("error", reject);
-  });
-}
+import { detectPackageManager, runPackageManagerAdd } from "./pm";
 
 async function main() {
   function loadPackageJsonFromDir(startDir: string) {
@@ -143,7 +127,8 @@ async function main() {
       "--out <path>",
       "write .tgz directly to the given path (no node_modules prefix)"
     )
-    .option("--pnpm-cmd <cmd>", "pnpm command to run")
+    .option("--pnpm-cmd <cmd>", "(deprecated) pnpm command to run")
+    .option("--pm-cmd <cmd>", "package manager command to run (npm|pnpm|yarn)")
     .option("--proxy <url>", "HTTP(S) proxy URL")
     .option("-q, --quiet", "quiet mode")
     .option("--no-pretty", "disable pretty (colored/shortened) output")
@@ -244,11 +229,13 @@ async function main() {
       }
     }
 
-    // Run pnpm add
+    // Decide package manager: CLI option > legacy pnpm-cmd > auto-detect
+    const selectedPm = raw.pmCmd || raw.pnpmCmd || detectPackageManager(process.cwd());
+    logger.info(`Using package manager: ${selectedPm}`);
     try {
-      await runPnpmAdd(raw.pnpmCmd || "pnpm", outPath, logger);
+      await runPackageManagerAdd(selectedPm, outPath, logger);
     } catch (er: any) {
-      logger.error(`pnpm failed: ${er.message}`);
+      logger.error(`package manager failed: ${er.message}`);
       process.exitCode = 5;
       return;
     }

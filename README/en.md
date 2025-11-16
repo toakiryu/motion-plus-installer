@@ -27,7 +27,7 @@
 
 # Motion Plus Installer
 
-Motion Plus Installer is a lightweight CLI tool that fetches distribution `.tgz` files for Motion from an authenticated API and installs them into your project using install.
+Motion Plus Installer is a lightweight CLI tool that fetches distribution `.tgz` files for Motion from an authenticated API and installs them into your project. By default it prefers `pnpm`, but it also supports `npm` and other package managers and lets you explicitly choose one with the `--pm-cmd` option.
 
 ## Background
 
@@ -39,41 +39,64 @@ Key motivations:
 - Make CI integration and automation easier
 - Improve reproducibility and offline resilience by caching downloaded `.tgz` files
 
+## Supported package managers
+
+| Package manager |                 Support | Verified | Notes                                                   |
+| --------------- | ----------------------: | :------: | ------------------------------------------------------- |
+| `pnpm`          | Recommended / preferred |    ◎     | Preferred by default; most thoroughly tested.           |
+| `npm`           |               Supported |    〇    | Can be selected as a fallback depending on detection.   |
+| `yarn`          |               Supported |    △     | Behavior may differ between Classic and Berry.          |
+| `bun`           |            Experimental |    ×     | Detected if `bun` is on PATH; compatibility is limited. |
+
+See the "Package manager auto-detection" section for detection behavior.
+
 ## Benefits
 
-- Simple: one command downloads the authenticated package and runs `pnpm add`.
+- Simple: one command downloads the authenticated package and installs it into your project using the selected package manager (pnpm is preferred by default).
 - Safe: tokens are passed via environment variables and token values are not printed to logs.
-- CI-friendly: works with secrets and supports `--pnpm-cmd` to customize the pnpm command.
+- CI-friendly: works with secrets and provides `--pm-cmd` to explicitly choose a package manager when desired. If not specified, the CLI attempts to auto-detect the manager from the environment and repository.
 - Reproducible: cached `.tgz` files enable consistent installs and offline usage.
-- Lightweight: designed to fit into Node + pnpm workflows without heavy external dependencies.
+- Lightweight: designed to run in Node environments without heavy external dependencies; package manager is auto-detected or selectable via `--pm-cmd`.
 
 ## Overview
 
 - The download endpoint requires authentication using a Bearer token (`MOTION_TOKEN`).
-- Downloaded `.tgz` files are cached by default under `node_modules/<storageSubdir>/` and then installed via `pnpm add`.
+- Downloaded `.tgz` files are cached by default under `node_modules/<storageSubdir>/` and then installed using the selected package manager.
 - The CLI provides options for retries, force re-download, cache keep/remove, and more; it is designed to work well in CI.
 
 ## Quick Start (end users)
 
 1. Install the CLI in your project (dev dependency example):
 
-~~~sh
+```sh
 cd /path/to/your-project
 pnpm add --save-dev motion-plus-installer
-~~~
+```
 
 2. Set the token environment variable and run (PowerShell example):
 
-~~~sh
+```sh
 $env:MOTION_TOKEN = 'your-token'
 npx motion-plus-installer -p motion-plus -v 2.0.0
-~~~
+```
 
 3. Run quickly with a local `.env` using `dotenv-cli` (recommended for local testing):
 
-~~~sh
+```sh
 npx dotenv-cli -e .env -- npx motion-plus-installer -p motion-plus -v 2.0.0
-~~~
+```
+
+## Package manager auto-detection
+
+When `--pm-cmd` is not explicitly provided, the CLI attempts to detect the package manager in the following order:
+
+1. Environment indicators (e.g. `npm_config_user_agent`) and execution path info (e.g. `npm_execpath`)
+2. The `packageManager` field in `package.json`
+3. Lockfiles at the repository root (`pnpm-lock.yaml`, `package-lock.json`, `yarn.lock`, etc.)
+4. Executable availability checks on `PATH` (e.g. `pnpm`, `npm`, `yarn`)
+5. If none apply, fall back to `npm`
+
+If you specifically rely on `pnpm` behavior, pass `--pm-cmd pnpm`. The old `--pnpm-cmd` option remains for compatibility but `--pm-cmd` is preferred.
 
 ## Documentation
 
@@ -84,12 +107,12 @@ npx dotenv-cli -e .env -- npx motion-plus-installer -p motion-plus -v 2.0.0
 
 Basic development flow:
 
-~~~sh
+```sh
 cd packages/motion-plus-installer
 pnpm install
 pnpm run build
 pnpm test
-~~~
+```
 
 - Use `pnpm pack` or `npm publish` to publish a release.
 - The build generates an executable under `dist/`.
@@ -102,7 +125,3 @@ pnpm test
 ## License
 
 See [`license.txt`](https://github.com/toakiryu/motion-plus-installer/blob/main/LICENSE.txt) for license information (typically MIT).
-
----
-
-_Translated from Japanese to English using AI assistance._

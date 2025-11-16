@@ -9,6 +9,10 @@
     {
       "name": "pkg : motion-plus-installer",
       "cwd": "./packages/motion-plus-installer"
+    },
+    {
+      "name": "pkg : tmp",
+      "cwd": "C:/Users/toaki/AppData/Local/Temp/mpi-install-test"
     }
   ]
 }
