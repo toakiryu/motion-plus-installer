@@ -16,6 +16,12 @@
     <a href="#">Website</a>
     ·
     <a href="https://github.com/toakiryu/motion-plus-installer/issues">Issues</a>
+    <br />
+    <br />
+    <br />
+    <a href="./usage.ja.md">Japanese</a>
+    ·
+    <a href="./usage.en.md">English</a>
   </p>
 </p>
 

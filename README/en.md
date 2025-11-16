@@ -1,6 +1,6 @@
 <p align="center">
   <picture>
-    <img width="150" src="./assets/images/motion-inst.1500x1500.png" alt="Motion Inst Logo">
+    <img width="150" src="https://raw.githubusercontent.com/toakiryu/motion-plus-installer/refs/heads/main/assets/images/motion-inst.1500x1500.png" alt="Motion Inst Logo">
   </picture>
   <h2 align="center">
     Motion Inst
@@ -16,12 +16,18 @@
     <a href="#">Website</a>
     ·
     <a href="https://github.com/toakiryu/motion-plus-installer/issues">Issues</a>
+    <br />
+    <br />
+    <br />
+    <a href="./ja.md">Japanese</a>
+    ·
+    <a href="./en.md">English</a>
   </p>
 </p>
 
 # Motion Plus Installer
 
-Motion Plus Installer is a lightweight CLI tool that fetches distribution `.tgz` files for Motion from an authenticated API and installs them into your project using `pnpm add ./<file.tgz>`.
+Motion Plus Installer is a lightweight CLI tool that fetches distribution `.tgz` files for Motion from an authenticated API and installs them into your project using install.
 
 ## Background
 
@@ -51,39 +57,39 @@ Key motivations:
 
 1. Install the CLI in your project (dev dependency example):
 
-```powershell
+~~~sh
 cd /path/to/your-project
 pnpm add --save-dev motion-plus-installer
-```
+~~~
 
 2. Set the token environment variable and run (PowerShell example):
 
-```powershell
+~~~sh
 $env:MOTION_TOKEN = 'your-token'
 npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 3. Run quickly with a local `.env` using `dotenv-cli` (recommended for local testing):
 
-```powershell
+~~~sh
 npx dotenv-cli -e .env -- npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 ## Documentation
 
-- Detailed user instructions, options, and CI examples: `packages/motion-plus-installer/docs/usage.en.md`
-- Developer documentation (build steps, tests, design): `packages/motion-plus-installer/docs/dev.en.md`
+- [Detailed user instructions, options, and CI examples](https://github.com/toakiryu/motion-plus-installer/blob/main/packages/motion-plus-installer/docs/usage.en.md)
+- [Developer documentation (build steps, tests, design)](https://github.com/toakiryu/motion-plus-installer/blob/main/packages/motion-plus-installer/docs/dev.en.md)
 
 ## Development & Build
 
 Basic development flow:
 
-```powershell
+~~~sh
 cd packages/motion-plus-installer
 pnpm install
 pnpm run build
 pnpm test
-```
+~~~
 
 - Use `pnpm pack` or `npm publish` to publish a release.
 - The build generates an executable under `dist/`.
@@ -95,7 +101,8 @@ pnpm test
 
 ## License
 
-See `packages/motion-plus-installer/package.json` for license information (typically MIT).
+See [`license.txt`](https://github.com/toakiryu/motion-plus-installer/blob/main/LICENSE.txt) for license information (typically MIT).
 
 ---
-*Translated from Japanese to English using AI assistance.*
+
+_Translated from Japanese to English using AI assistance._

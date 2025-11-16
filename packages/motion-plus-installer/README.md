@@ -1,3 +1,30 @@
+<p align="center">
+  <picture>
+    <img width="150" src="https://raw.githubusercontent.com/toakiryu/motion-plus-installer/refs/heads/main/assets/images/motion-inst.1500x1500.png" alt="Motion Inst Logo">
+  </picture>
+  <h2 align="center">
+    Motion Inst
+  </h2>
+  <p align="center">
+    Lightweight CLI to install Motion+ packages
+    <br />
+    <a href="#"><strong>Learn more »</strong></a>
+    <br />
+    <br />
+    <a href="#">Discord</a>
+    ·
+    <a href="#">Website</a>
+    ·
+    <a href="https://github.com/toakiryu/motion-plus-installer/issues">Issues</a>
+    <br />
+    <br />
+    <br />
+    <a href="https://github.com/toakiryu/motion-plus-installer/blob/main/README/ja.md">Japanese</a>
+    ·
+    <a href="https://github.com/toakiryu/motion-plus-installer/blob/main/README/en.md">English</a>
+  </p>
+</p>
+
 # Motion Plus Installer
 
 Lightweight CLI to install Motion+ packages
@@ -52,10 +79,11 @@ See `motion-plus-installer --help` for the full list of options.
   run: npx motion-plus-installer -p motion-plus -v 2.0.0
 ~~~
 
-## Developer docs
+## Documentation
 
-Detailed usage and development instructions: `packages/motion-plus-installer/docs/usage.en.md` and `packages/motion-plus-installer/docs/dev.en.md`.
+- [Detailed user instructions, options, and CI examples](https://github.com/toakiryu/motion-plus-installer/blob/main/packages/motion-plus-installer/docs/usage.en.md)
+- [Developer documentation (build steps, tests, design)](https://github.com/toakiryu/motion-plus-installer/blob/main/packages/motion-plus-installer/docs/dev.en.md)
 
 ## License
 
-See `packages/motion-plus-installer/package.json` for license information.
+See [`license.txt`](https://github.com/toakiryu/motion-plus-installer/blob/main/packages/motion-plus-installer/LICENSE.txt) for license information.

@@ -1,6 +1,6 @@
 <p align="center">
   <picture>
-    <img width="150" src="../../../assets/images/motion-inst.1500x1500.png" alt="Motion Inst Logo">
+    <img width="150" src="https://raw.githubusercontent.com/toakiryu/motion-plus-installer/refs/heads/main/assets/images/motion-inst.1500x1500.png" alt="Motion Inst Logo">
   </picture>
   <h2 align="center">
     Motion Inst
@@ -16,6 +16,12 @@
     <a href="#">Website</a>
     ·
     <a href="https://github.com/toakiryu/motion-plus-installer/issues">Issues</a>
+    <br />
+    <br />
+    <br />
+    <a href="./dev.ja.md">Japanese</a>
+    ·
+    <a href="./dev.en.md">English</a>
   </p>
 </p>
 
