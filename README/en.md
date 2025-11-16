@@ -19,9 +19,9 @@
     <br />
     <br />
     <br />
-    <a href="./ja.md">Japanese</a>
+    <a href="/README/ja.md">Japanese</a>
     ·
-    <a href="./en.md">English</a>
+    <a href="/README/en.md">English</a>
   </p>
 </p>
 
