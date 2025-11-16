@@ -31,6 +31,7 @@ jobs:
         with:
           package_json_file: packages/motion-plus-installer/package.json
           run_install: false
+          version: 10
 
       - name: Install
         run: |
