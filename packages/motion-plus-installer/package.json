@@ -1,6 +1,6 @@
 {
   "name": "motion-plus-installer",
-  "version": "0.0.1-beta.0",
+  "version": "0.1.0-beta.0",
   "description": "Lightweight CLI to install Motion+ packages",
   "bin": {
     "motion-plus-installer": "dist/cjs/installer.js",
@@ -27,6 +27,7 @@
     "vitest": "^1.3.0"
   },
   "keywords": [
+    "motion",
     "motion-plus",
     "installer",
     "cli"
@@ -44,6 +45,5 @@
   "bugs": {
     "url": "https://github.com/toakiryu/motion-plus-installer/issues"
   },
-  "license": "MIT",
-  "packageManager": "pnpm@10.22.0"
+  "license": "MIT"
 }
