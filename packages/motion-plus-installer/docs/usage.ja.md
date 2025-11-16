@@ -108,11 +108,24 @@ npx motion-plus-installer -p motion-plus --no-keep
 - `--keep / --no-keep` : ダウンロード後に .tgz を保持するか（デフォルト: 保持）。
 - `--force` : 既存のキャッシュを上書きして再ダウンロードする。
 - `--retry <n>` : ダウンロード再試行回数（デフォルト 2）。
-- `--pnpm-cmd <cmd>` : `pnpm` の実行コマンド名（デフォルト `pnpm`）を変更可能。CI 環境で別コマンドを使う場合に便利。
+- `--pm-cmd <cmd>` : パッケージマネージャ実行コマンド（例: `pnpm`, `npm`, `yarn`）を指定します。互換性のため `--pnpm-cmd` も受け付けます。
 - `-q, --quiet` : 最小限のログ出力。
 - `--no-pretty` : 色付けやパス短縮などの「見た目」機能を無効化し、プレーン出力にします。
 
 詳細は `motion-plus-installer --help` を参照してください。
+
+## 自動パッケージマネージャ検出
+
+`--pm-cmd`（または互換の `--pnpm-cmd`）が指定されていない場合、CLI は実行環境とリポジトリの状態から自動的に利用するパッケージマネージャを推測して選択します。一般的な優先順位は次の通りです。
+
+1. 環境変数 `npm_config_user_agent`（CI やラッパーが設定することが多い）
+2. 環境変数 `npm_execpath`（実行された npm 系コマンドのパス）
+3. `package.json` の `packageManager` フィールド（例: `pnpm@7.0.0`）
+4. ロックファイルの存在（`pnpm-lock.yaml` → `package-lock.json` → `yarn.lock` → `bun.lockb` の順）
+5. PATH に存在する実行可能ファイル（`pnpm`, `yarn`, `bun` など）
+6. 上記で特定できない場合は `npm` をデフォルトとします。
+
+自動検出が便利な反面、CI や特殊環境では意図しない検出結果になることがあります。確実に使いたい場合は `--pm-cmd` で明示してください。
 
 ## CI での利用例（GitHub Actions）
 

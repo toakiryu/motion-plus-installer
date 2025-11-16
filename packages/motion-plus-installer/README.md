@@ -29,22 +29,33 @@
 
 Lightweight CLI to install Motion+ packages
 
-Motion Plus Installer fetches authenticated distribution `.tgz` files for Motion and installs them into your project (the CLI runs `pnpm add ./<file.tgz>` by default).
+Motion Plus Installer fetches authenticated distribution `.tgz` files for Motion and installs them into your project. By default the CLI prefers `pnpm`, but it also supports `npm` and other package managers; you can explicitly choose one with the `--pm-cmd` option.
 
 ## Quick install
 
 Install in a project (dev dependency):
 
-~~~sh
+```sh
 cd /path/to/your-project
 pnpm add --save-dev motion-plus-installer
-~~~
+```
 
 Or run without installing via npx:
 
-~~~sh
+```sh
 npx motion-plus-installer -p motion-plus -v 2.0.0
-~~~
+```
+
+## Supported package managers
+
+| Package manager |                 Support | Verified | Notes                                                   |
+| --------------- | ----------------------: | :------: | ------------------------------------------------------- |
+| `pnpm`          | Recommended / preferred |    ◎     | Preferred by default; most thoroughly tested.           |
+| `npm`           |               Supported |    〇    | Can be selected as a fallback depending on detection.   |
+| `yarn`          |               Supported |    △     | Behavior may differ between Classic and Berry.          |
+| `bun`           |            Experimental |    ×     | Detected if `bun` is on PATH; compatibility is limited. |
+
+See the "Package manager auto-detection" section for detection behavior.
 
 ## Required environment
 
@@ -52,10 +63,10 @@ npx motion-plus-installer -p motion-plus -v 2.0.0
 
 Example (PowerShell):
 
-~~~sh
+```sh
 $env:MOTION_TOKEN = 'your-token'
 npx motion-plus-installer -p motion-plus -v 2.0.0
-~~~
+```
 
 ## Common options
 
@@ -70,14 +81,14 @@ See `motion-plus-installer --help` for the full list of options.
 
 ## CI example (GitHub Actions)
 
-~~~yml
+```yml
 - name: Install CLI
   run: pnpm add --save-dev motion-plus-installer
 - name: Run installer
   env:
     MOTION_TOKEN: ${{ secrets.MOTION_TOKEN }}
   run: npx motion-plus-installer -p motion-plus -v 2.0.0
-~~~
+```
 
 ## Documentation
 
