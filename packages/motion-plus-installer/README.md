@@ -90,11 +90,6 @@ See `motion-plus-installer --help` for the full list of options.
   run: npx motion-plus-installer -p motion-plus -v 2.0.0
 ~~~
 
-## Documentation
-
-- [Detailed user instructions, options, and CI examples](https://github.com/toakiryu/motion-plus-installer/blob/main/packages/motion-plus-installer/docs/usage.en.md)
-- [Developer documentation (build steps, tests, design)](https://github.com/toakiryu/motion-plus-installer/blob/main/packages/motion-plus-installer/docs/dev.en.md)
-
 ## License
 
 See [`license.txt`](https://github.com/toakiryu/motion-plus-installer/blob/main/packages/motion-plus-installer/LICENSE.txt) for license information.
