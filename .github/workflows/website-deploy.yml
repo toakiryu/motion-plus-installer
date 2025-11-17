@@ -25,11 +25,37 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    outputs:
+      website_changed: ${{ steps.check_website.outputs.website_changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Not needed if lastUpdated is not enabled
+      # Quick check: has anything under `website/` changed? If not, skip build.
+      - name: Check website changes
+        id: check_website
+        run: |
+          echo "event=${{ github.event_name }}"
+          # On manual dispatch, force deploy
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "website_changed=true" >> $GITHUB_OUTPUT
+            echo "Manual workflow_dispatch: forcing website deploy"
+            exit 0
+          fi
+          # If this is a new branch/comparison baseline missing, treat as changed
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            echo "website_changed=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- website || true)
+          if [ -n "$CHANGED" ]; then
+            echo "website_changed=true" >> $GITHUB_OUTPUT
+            echo "Website changed:\n$CHANGED"
+          else
+            echo "website_changed=false" >> $GITHUB_OUTPUT
+            echo "No changes under website/ detected; build will be skipped."
+          fi
       # - uses: pnpm/action-setup@v4 # Uncomment this block if you're using pnpm
       #   with:
       #     version: 9 # Not needed if you've set "packageManager" in package.json
@@ -43,18 +69,32 @@ jobs:
         with:
           run_install: false
           version: 10
+      # Cache pnpm store to speed up CI (keyed by lockfile)
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
       - name: Setup Pages
         uses: actions/configure-pages@v4
-      - name: Install dependencies
-        run: pnpm install # or pnpm install / yarn install / bun install
+      - name: Install dependencies (website)
+        if: steps.check_website.outputs.website_changed == 'true'
+        run: pnpm install --frozen-lockfile
         working-directory: website
-      - name: Build with VitePress
-        run: pnpm docs:build # or pnpm docs:build / yarn docs:build / bun run docs:build
+
+      - name: Build with VitePress (website)
+        if: steps.check_website.outputs.website_changed == 'true'
+        run: pnpm docs:build
         working-directory: website
+
       - name: Upload artifact
+        if: steps.check_website.outputs.website_changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: website/.vitepress/dist
+          # Use glob to ensure artifact step succeeds even when path contains files
+          path: website/.vitepress/dist/**
 
   # Deployment job
   deploy:
@@ -62,6 +102,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     needs: build
+    if: needs.build.outputs.website_changed == 'true'
     runs-on: ubuntu-latest
     name: Deploy
     steps:
