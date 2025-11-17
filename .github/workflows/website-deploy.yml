@@ -38,7 +38,11 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: pnpm # or pnpm / yarn
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          run_install: false
+          version: 10
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Install dependencies
