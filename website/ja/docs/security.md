@@ -38,7 +38,7 @@ GitHub Actions の例（シークレットに `MOTION_TOKEN` を登録）
 - name: Run installer
   env:
     MOTION_TOKEN: ${{ secrets.MOTION_TOKEN }}
-  run: npx motion-plus-installer -p motion-plus -v 2.0.0
+  run: npx motion-plus-installer i motion-plus
 ```
 
 :::

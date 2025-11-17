@@ -3,10 +3,18 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "pnpm --stream '/^(website:)?dev$/'",
+    "docs:dev": "wait-on -d 100 dist/node/cli.js && pnpm -F=website dev",
+    "docs:debug": "NODE_OPTIONS='--inspect-brk' pnpm docs:dev",
+    "docs:build": "pnpm build && pnpm docs:build:only",
+    "docs:build:only": "pnpm -F=website build",
+    "docs:preview": "pnpm -F=website preview",
+    "docs:lunaria:build": "pnpm -F=website lunaria:build",
+    "docs:lunaria:open": "pnpm -F=website lunaria:open"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "packageManager": "pnpm@10.20.0"
 }

@@ -8,12 +8,12 @@
   <p align="center">
     Lightweight CLI to install Motion+ packages
     <br />
-    <a href="#"><strong>Learn more »</strong></a>
+    <a href="https://motion-inst.oss.toaki.cc"><strong>Learn more »</strong></a>
     <br />
     <br />
     <a href="#">Discord</a>
     ·
-    <a href="#">Website</a>
+    <a href="https://motion-inst.oss.toaki.cc">Website</a>
     ·
     <a href="https://github.com/toakiryu/motion-plus-installer/issues">Issues</a>
     <br />
@@ -35,16 +35,16 @@ Motion Plus Installer fetches authenticated distribution `.tgz` files for Motion
 
 Install in a project (dev dependency):
 
-~~~sh
+```sh
 cd /path/to/your-project
 pnpm add --save-dev motion-plus-installer
-~~~
+```
 
 Or run without installing via npx:
 
-~~~sh
-npx motion-plus-installer -p motion-plus -v 2.0.0
-~~~
+```sh
+npx motion-plus-installer install motion-plus@latest
+```
 
 ## Supported package managers
 
@@ -63,10 +63,10 @@ See the "Package manager auto-detection" section for detection behavior.
 
 Example (PowerShell):
 
-~~~sh
+```sh
 $env:MOTION_TOKEN = 'your-token'
-npx motion-plus-installer -p motion-plus -v 2.0.0
-~~~
+npx motion-plus-installer install motion-plus@latest
+```
 
 ## Common options
 
@@ -81,14 +81,14 @@ See `motion-plus-installer --help` for the full list of options.
 
 ## CI example (GitHub Actions)
 
-~~~yml
+```yml
 - name: Install CLI
   run: pnpm add --save-dev motion-plus-installer
 - name: Run installer
   env:
     MOTION_TOKEN: ${{ secrets.MOTION_TOKEN }}
-  run: npx motion-plus-installer -p motion-plus -v 2.0.0
-~~~
+  run: npx motion-plus-installer install motion-plus@latest
+```
 
 ## License
 

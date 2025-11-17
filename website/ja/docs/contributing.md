@@ -1,7 +1,6 @@
-# CI 連携例
+# コントリビュート方法
 
-<div class="tip custom-block" style="padding-top: 8px">
-
+::: tip
 近日公開
 
-</div>
+:::
