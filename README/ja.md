@@ -60,23 +60,23 @@ Motion 製品の配布用 `.tgz` を認証付き API から取得し、プロジ
 
 1. プロジェクトにインストール（開発用依存の例）:
 
-```sh
+~~~sh
 cd /path/to/your-project
 pnpm add --save-dev motion-plus-installer
-```
+~~~
 
 1. 環境変数にトークンを設定して実行（PowerShell の例）:
 
-```sh
+~~~sh
 $env:MOTION_TOKEN = 'your-token'
 npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 1. ローカル `.env` から一時的に環境変数を読み込んで実行する例（推奨）:
 
-```sh
+~~~sh
 npx dotenv-cli -e .env -- npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 ## ドキュメント
 
@@ -100,12 +100,12 @@ npx dotenv-cli -e .env -- npx motion-plus-installer -p motion-plus -v 2.0.0
 
 開発者向けの基本的な流れ:
 
-```sh
+~~~sh
 cd packages/motion-plus-installer
 pnpm install
 pnpm run build
 pnpm test
-```
+~~~
 
 - 配布時には `pnpm pack` または `npm publish` を使用します。
 - ビルドは `dist/` に実行ファイルを生成するように設定されています（プロジェクトの設定に従ってください）。

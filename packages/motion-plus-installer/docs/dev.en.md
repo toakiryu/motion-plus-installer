@@ -35,22 +35,22 @@ A lightweight CLI that retrieves `.tgz` packages for Motion from an authenticate
 
 Build and pack the in-repo package (example):
 
-```powershell
+~~~powershell
 cd packages\motion-plus-installer
 pnpm install
 pnpm run build
 pnpm pack
 # -> motion-plus-installer-0.1.0.tgz is generated
-```
+~~~
 
 Install the local tgz into a test project:
 
-```powershell
+~~~powershell
 cd /path/to/test-project
 pnpm init -y
 pnpm add "C:\path\to\motion-plus-installer-0.1.0.tgz"
 .\node_modules\.bin\motion-plus-installer --help
-```
+~~~
 
 ## CLI usage
 

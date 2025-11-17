@@ -35,22 +35,22 @@ Motion 製品の認証付き API から .tgz を取得し、`pnpm add ./<file.tg
 
 リポジトリ内パッケージのビルドとパック（例）:
 
-```powershell
+~~~powershell
 cd packages\motion-plus-installer
 pnpm install
 pnpm run build
 pnpm pack
 # -> motion-plus-installer-0.1.0.tgz が生成される
-```
+~~~
 
 テストプロジェクトでローカル tgz をインストール:
 
-```powershell
+~~~powershell
 cd /path/to/test-project
 pnpm init -y
 pnpm add "C:\path\to\motion-plus-installer-0.1.0.tgz"
 .\node_modules\.bin\motion-plus-installer --help
-```
+~~~
 
 ## 使い方（CLI）
 

@@ -35,16 +35,16 @@ Motion Plus Installer fetches authenticated distribution `.tgz` files for Motion
 
 Install in a project (dev dependency):
 
-```sh
+~~~sh
 cd /path/to/your-project
 pnpm add --save-dev motion-plus-installer
-```
+~~~
 
 Or run without installing via npx:
 
-```sh
+~~~sh
 npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 ## Supported package managers
 
@@ -63,10 +63,10 @@ See the "Package manager auto-detection" section for detection behavior.
 
 Example (PowerShell):
 
-```sh
+~~~sh
 $env:MOTION_TOKEN = 'your-token'
 npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 ## Common options
 
@@ -74,21 +74,21 @@ npx motion-plus-installer -p motion-plus -v 2.0.0
 - `-v, --pkg-version <version>` : version to fetch.
 - `--keep / --no-keep` : keep downloaded `.tgz` after install (default: keep).
 - `--force` : force re-download.
-- `--pnpm-cmd <cmd>` : pnpm command to run (default: `pnpm`).
+- `--pm-cmd <cmd>` : package manager command to run (default: `pnpm`).
 - `-q, --quiet` : minimal logging.
 
 See `motion-plus-installer --help` for the full list of options.
 
 ## CI example (GitHub Actions)
 
-```yml
+~~~yml
 - name: Install CLI
   run: pnpm add --save-dev motion-plus-installer
 - name: Run installer
   env:
     MOTION_TOKEN: ${{ secrets.MOTION_TOKEN }}
   run: npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 ## Documentation
 

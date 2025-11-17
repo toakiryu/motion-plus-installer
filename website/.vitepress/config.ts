@@ -34,7 +34,6 @@ export default defineConfig({
 
   locales: {
     root: { label: "日本語", lang: "ja-JP", dir: "ltr" },
-    en: { label: "English", lang: "en-US", dir: "ltr" },
   },
 
   markdown: {
@@ -62,44 +61,26 @@ export default defineConfig({
         })();
         return fence(tokens, idx, options, env, self).replace(
           '<button title="Copy Code" class="copy"></button>',
-          `<button title="${codeCopyButtonTitle}" class="copy"></button>`
+          `<button title="${codeCopyButtonTitle}" class="copy"></button>`,
         );
       };
       md.use(groupIconMdPlugin);
     },
   },
 
-  head: [
-    ["meta", { name: "theme-color", content: "#40DCA5" }],
-    // BuyMeACoffee widget script intentionally removed.
-    // We prefer a header/social link to avoid SSR/hydration conflicts with VitePress.
-  ],
+  head: [["meta", { name: "theme-color", content: "#40DCA5" }]],
 
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
-    nav: [
-      { text: "Home", link: "/" },
-      { text: "Examples", link: "/markdown-examples" },
-    ],
-
     socialLinks: [
-      { icon: "github", link: "https://github.com/vuejs/vitepress" },
+      {
+        icon: "github",
+        link: "https://github.com/toakiryu/motion-plus-installer",
+      },
       { icon: "buymeacoffee", link: "https://buymeacoffee.com/toaki" },
     ],
 
-    sidebar: [
-      {
-        text: "Examples",
-        items: [
-          { text: "Markdown Examples", link: "/markdown-examples" },
-          { text: "Runtime API Examples", link: "/api-examples" },
-        ],
-      },
-    ],
-
-    footer: {
-      message: "Released under the MIT License.",
-      copyright: "Copyright © 2025-present Toa Kiryu",
+    search: {
+      provider: "local",
     },
   },
 
@@ -109,12 +90,11 @@ export default defineConfig({
         customIcon: {
           vitepress: localIconLoader(
             import.meta.url,
-            "../public/vitepress-logo-mini.png"
+            "../public/vitepress-logo-mini.png",
           ),
           firebase: "logos:firebase",
         },
       }),
-      prod &&
         llmstxt({
           workDir: "ja",
           ignoreFiles: ["index.md"],
@@ -126,14 +106,14 @@ export default defineConfig({
     ? (pageData, ctx) => {
         const site = resolveSiteDataByRoute(
           ctx.siteConfig.site,
-          pageData.relativePath
+          pageData.relativePath,
         );
         const title = `${pageData.title || site.title} | ${
           pageData.description || site.description
         }`;
         ((pageData.frontmatter.head ??= []) as HeadConfig[]).push(
           ["meta", { property: "og:locale", content: site.lang }],
-          ["meta", { property: "og:title", content: title }]
+          ["meta", { property: "og:title", content: title }],
         );
       }
     : undefined,

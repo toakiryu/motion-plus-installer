@@ -33,18 +33,18 @@
 
 プロジェクトにローカルでインストールする例:
 
-```powershell
+~~~powershell
 cd /path/to/your-project
 pnpm add --save-dev motion-plus-installer
 # もしくは開発依存にしたくない場合
 pnpm add motion-plus-installer
-```
+~~~
 
 グローバルで使いたい場合（OS によっては権限や PATH の扱いに注意）:
 
-```powershell
+~~~powershell
 pnpm add -g motion-plus-installer
-```
+~~~
 
 インストール後、実行方法の例:
 
@@ -59,10 +59,10 @@ pnpm add -g motion-plus-installer
 - `MOTION_TOKEN` — 必須。Motion 製品のダウンロード API にアクセスするための Bearer トークン。
   - 例（PowerShell）:
 
-```powershell
+~~~powershell
 $env:MOTION_TOKEN = 'your-token-here'
 motion-plus-installer -p motion-plus
-```
+~~~
 
 CI/CD ではシークレットストア（GitHub Secrets 等）にトークンを入れて渡してください。
 
@@ -70,9 +70,9 @@ CI/CD ではシークレットストア（GitHub Secrets 等）にトークン�
 
 ローカル開発時に `.env` ファイルから一時的に環境変数を読み込んでコマンドを実行するには、`dotenv-cli` を使うと便利です。`npx` を使えばローカルにインストールせずに実行できます。例:
 
-```powershell
+~~~powershell
 npx dotenv-cli -e .env -- npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 CI 環境ではシークレットストアを使用することを推奨しますが、ローカルの簡易検証では上記コマンドが便利です。
 
@@ -80,24 +80,24 @@ CI 環境ではシークレットストアを使用することを推奨しま�
 
 1. トークンをセットして、指定パッケージ/バージョンをインストールする最小例:
 
-```powershell
+~~~powershell
 # 環境変数にトークンをセット
 $env:MOTION_TOKEN = 'xxxxx'
 # パッケージ 'motion-plus' のデフォルト（または指定）バージョンをダウンロードして pnpm add する
 npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 2. 既存キャッシュを上書きして再ダウンロードする（--force）:
 
-```powershell
+~~~powershell
 npx motion-plus-installer -p motion-plus --force
-```
+~~~
 
 3. ダウンロードした .tgz を自動で削除したい場合（デフォルトは保持）:
 
-```powershell
+~~~powershell
 npx motion-plus-installer -p motion-plus --no-keep
-```
+~~~
 
 ## 主要 CLI オプション（概要）
 
@@ -129,7 +129,7 @@ npx motion-plus-installer -p motion-plus --no-keep
 
 ## CI での利用例（GitHub Actions）
 
-```yaml
+~~~yaml
 - uses: actions/checkout@v4
 - name: Setup Node
   uses: pnpm/action-setup@v2
@@ -141,7 +141,7 @@ npx motion-plus-installer -p motion-plus --no-keep
   env:
     MOTION_TOKEN: ${{ secrets.MOTION_TOKEN }}
   run: npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 ## トラブルシューティング
 

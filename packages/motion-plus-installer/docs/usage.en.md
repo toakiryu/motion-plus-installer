@@ -33,18 +33,18 @@ This document provides concise instructions for end users to install `motion-plu
 
 Install locally in your project:
 
-```powershell
+~~~powershell
 cd /path/to/your-project
 pnpm add --save-dev motion-plus-installer
 # or, if you prefer not to save as a dev dependency
 pnpm add motion-plus-installer
-```
+~~~
 
 Global install (may require elevated permissions on some OSes):
 
-```powershell
+~~~powershell
 pnpm add -g motion-plus-installer
-```
+~~~
 
 After installation:
 
@@ -58,10 +58,10 @@ ode_modules\.bin\motion-plus-installer --help`
 
 PowerShell example:
 
-```powershell
+~~~powershell
 $env:MOTION_TOKEN = 'your-token-here'
 motion-plus-installer -p motion-plus
-```
+~~~
 
 For CI/CD, provide the token via your secret store (e.g. GitHub Secrets).
 
@@ -69,9 +69,9 @@ For CI/CD, provide the token via your secret store (e.g. GitHub Secrets).
 
 Use `dotenv-cli` to load a `.env` file temporarily without installing it globally. Example:
 
-```powershell
+~~~powershell
 npx dotenv-cli -e .env -- npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 In CI, prefer injecting secrets via the runner's secret management.
 
@@ -79,24 +79,24 @@ In CI, prefer injecting secrets via the runner's secret management.
 
 1. Minimal example — set token and install a specified package/version:
 
-```powershell
+~~~powershell
 # set token
 $env:MOTION_TOKEN = 'xxxxx'
 # download and install package 'motion-plus' version 2.0.0
 npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 2. Force re-download to overwrite existing cache:
 
-```powershell
+~~~powershell
 npx motion-plus-installer -p motion-plus --force
-```
+~~~
 
 3. Automatically delete the downloaded .tgz after install (default is to keep):
 
-```powershell
+~~~powershell
 npx motion-plus-installer -p motion-plus --no-keep
-```
+~~~
 
 ## Major CLI options (summary)
 
@@ -115,7 +115,7 @@ See `motion-plus-installer --help` for full details.
 
 ## CI example (GitHub Actions)
 
-```yaml
+~~~yaml
 - uses: actions/checkout@v4
 - name: Setup Node
   uses: pnpm/action-setup@v2
@@ -127,7 +127,7 @@ See `motion-plus-installer --help` for full details.
   env:
     MOTION_TOKEN: ${{ secrets.MOTION_TOKEN }}
   run: npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 ## Troubleshooting
 
