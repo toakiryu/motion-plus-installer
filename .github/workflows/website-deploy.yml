@@ -89,12 +89,31 @@ jobs:
         run: pnpm docs:build
         working-directory: website
 
-      - name: Upload artifact
+      # Verify build output exists before attempting to archive/upload
+      - name: Check build artifact exists
+        id: check_artifact
         if: steps.check_website.outputs.website_changed == 'true'
+        run: |
+          if [ -d website/.vitepress/dist ]; then
+            echo "artifact_exists=true" >> $GITHUB_OUTPUT
+            echo "Build artifact found: website/.vitepress/dist"
+          else
+            echo "artifact_exists=false" >> $GITHUB_OUTPUT
+            echo "Build artifact not found: website/.vitepress/dist"
+          fi
+
+      - name: Warn missing artifact
+        if: steps.check_website.outputs.website_changed == 'true' && steps.check_artifact.outputs.artifact_exists == 'false'
+        run: |
+          echo "ERROR: build succeeded but artifact directory website/.vitepress/dist is missing."
+          echo "Ensure 'pnpm docs:build' produces files under website/.vitepress/dist"
+          exit 1
+
+      - name: Upload artifact
+        if: steps.check_website.outputs.website_changed == 'true' && steps.check_artifact.outputs.artifact_exists == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
-          # Use glob to ensure artifact step succeeds even when path contains files
-          path: website/.vitepress/dist/**
+          path: website/.vitepress/dist
 
   # Deployment job
   deploy:
