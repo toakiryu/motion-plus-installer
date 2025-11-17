@@ -68,23 +68,23 @@ See the "Package manager auto-detection" section for detection behavior.
 
 1. Install the CLI in your project (dev dependency example):
 
-```sh
+~~~sh
 cd /path/to/your-project
 pnpm add --save-dev motion-plus-installer
-```
+~~~
 
 2. Set the token environment variable and run (PowerShell example):
 
-```sh
+~~~sh
 $env:MOTION_TOKEN = 'your-token'
 npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 3. Run quickly with a local `.env` using `dotenv-cli` (recommended for local testing):
 
-```sh
+~~~sh
 npx dotenv-cli -e .env -- npx motion-plus-installer -p motion-plus -v 2.0.0
-```
+~~~
 
 ## Package manager auto-detection
 
@@ -107,12 +107,12 @@ If you specifically rely on `pnpm` behavior, pass `--pm-cmd pnpm`. The old `--pn
 
 Basic development flow:
 
-```sh
+~~~sh
 cd packages/motion-plus-installer
 pnpm install
 pnpm run build
 pnpm test
-```
+~~~
 
 - Use `pnpm pack` or `npm publish` to publish a release.
 - The build generates an executable under `dist/`.
