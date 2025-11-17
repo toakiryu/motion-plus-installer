@@ -90,7 +90,7 @@ export default defineConfig({
         customIcon: {
           vitepress: localIconLoader(
             import.meta.url,
-            "../public/vitepress-logo-mini.png",
+            "../public/motion-inst.1500x1500.png",
           ),
           firebase: "logos:firebase",
         },
