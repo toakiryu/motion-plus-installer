@@ -3,11 +3,16 @@ base_path: .
 preserve_hierarchy: true
 
 files:
-  - source: "docs/ja/**/*.md"
+  - source: "docs/config.ts"
+    translation: "docs/%two_letters_code%/config.ts"
+
+  - base_path: "docs/ja"
+    source: "**/*.md"
+    # Preserve docs subdirectory structure by making original path relative to docs/ja
     translation: "docs/%two_letters_code%/%original_path%"
     ignore:
-      - "docs/ja/_plan.md"
+      - "_plan.md"
+      - "config.ts"
 
   - source: "README/ja.md"
-    # Place translated README files as `README/<two_letters_code>.md`, e.g. `README/en.md`
     translation: "README/%two_letters_code%.md"
