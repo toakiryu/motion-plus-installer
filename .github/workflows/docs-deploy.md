@@ -1,3 +1,6 @@
+# Deploy VitePress site to Pages
+
+```yml
 name: Deploy VitePress site to Pages
 
 on:
@@ -128,3 +131,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+```
