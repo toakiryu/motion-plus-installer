@@ -2,11 +2,10 @@
 
 Motion Inst は、Motion+ パッケージ群を安全かつ簡単に取得・インストールするための軽量なインストーラ／ランタイム補助ツールです。開発者や CI ワークフロー向けに設計され、手動での複雑な手順や依存関係の扱いを自動化します。
 
-<div class="tip custom-block" style="padding-top: 8px">
-
+::: tip
 まずは試してみたい？ [クイックスタート](./getting-started) へどうぞ。
 
-</div>
+:::
 
 ## 目的
 

@@ -1,262 +1,219 @@
 import fs from "fs";
 import path from "path";
-import { spawn, spawnSync } from "child_process";
-import { pipeline } from "stream";
-import { promisify } from "util";
 import { Command } from "commander";
-import os from "os";
 const program = new Command();
-const streamPipeline = promisify(pipeline);
 
-function ansi(code: any) {
-  return (s: any) => `\u001b[${code}m${s}\u001b[0m`;
-}
+import { storageDirFor } from "./lib";
+import { makeLogger } from "./utils";
+import { installFlow } from "./installer-flow";
 
-const green = ansi(32);
-const yellow = ansi(33);
-const cyan = ansi(36);
-const dim = ansi(2);
-const red = ansi(31);
-
-function shortenPath(p: string, cwd?: string) {
-  if (!p) return p;
-  const home = os.homedir();
-  try {
-    // If it's a URL, return as-is
-    if (/^[a-zA-Z]+:\/\//.test(p)) return p;
-
-    // Home-relative (~/...)
-    if (p.startsWith(home)) {
-      return `~${p.slice(home.length)}`.replace(/\\/g, "/");
-    }
-
-    // If the path is inside the current workspace (cwd), show as vscode-style: "<workspaceName>/path/to/file"
-    const workspace = cwd || process.cwd();
-    if (p.startsWith(workspace)) {
-      const rel = path.relative(workspace, p).replace(/\\/g, "/");
-      const base = path.basename(workspace);
-      if (!rel || rel === "") return base;
-      return `${base}/${rel}`;
-    }
-
-    const rel = path.relative(workspace, p);
-    if (!rel || rel === ".") return ".";
-    if (!rel.startsWith("..")) {
-      return `./${rel.replace(/\\/g, "/")}`;
-    }
-  } catch (e) {
-    // ignore and fallback
-  }
-  // fallback: if too long, truncate middle
-  const s = p.replace(/\\/g, "/");
-  if (s.length > 60) return `...${s.slice(-57)}`;
-  return s;
-}
-
-function makeLogger(quiet: boolean, pretty: boolean) {
-  return {
-    info: (...args: any[]) => {
-      if (quiet) return;
-      if (!pretty) {
-        console.log(...args);
-        return;
-      }
-      const out = args.join(" ");
-      console.log(green("info:"), out);
-    },
-    warn: (...args: any[]) => {
-      if (!pretty) console.error(...args);
-      else console.error(yellow("warn:"), args.join(" "));
-    },
-    error: (...args: any[]) => {
-      if (!pretty) console.error(...args);
-      else console.error(red("error:"), args.join(" "));
-    },
-    fmtPath: (p: any) => (pretty ? cyan(shortenPath(p)) : p),
-  };
-}
-
-import { fileNameFor, storageDirFor, buildUrl, downloadToFile } from "./lib";
-import { detectPackageManager, runPackageManagerAdd } from "./pm";
-
-async function main() {
-  function loadPackageJsonFromDir(startDir: string) {
-    let cur = startDir;
-    while (true) {
-      const candidate = path.join(cur, "package.json");
-      try {
-        if (fs.existsSync(candidate)) {
-          const raw = fs.readFileSync(candidate, "utf8");
-          return JSON.parse(raw);
-        }
-      } catch (e) {
-        // ignore and continue
-      }
-      const parent = path.dirname(cur);
-      if (parent === cur) break;
-      cur = parent;
-    }
-    // fallback to cwd
+function loadPackageJsonFromDir(startDir: string) {
+  let cur = startDir;
+  while (true) {
+    const candidate = path.join(cur, "package.json");
     try {
-      const cwdCandidate = path.join(process.cwd(), "package.json");
-      if (fs.existsSync(cwdCandidate)) {
-        return JSON.parse(fs.readFileSync(cwdCandidate, "utf8"));
+      if (fs.existsSync(candidate)) {
+        const raw = fs.readFileSync(candidate, "utf8");
+        return JSON.parse(raw);
       }
     } catch (e) {
-      // ignore
+      // ignore and continue
     }
-    throw new Error("package.json not found");
+    const parent = path.dirname(cur);
+    if (parent === cur) break;
+    cur = parent;
   }
-
-  const pkgJson = loadPackageJsonFromDir(__dirname);
-  program.version(
-    pkgJson.version || "0.0.0",
-    "-V, --version",
-    "output the CLI version"
-  );
-  program
-    .option("-p, --package <name>", "package name")
-    .option("-v, --pkg-version <ver>", "target package version")
-    .option("-s, --storage <subdir>", "storage subdir under node_modules")
-    .option("-t, --token <token>", "Authorization Bearer token")
-    .option("--keep", "keep downloaded .tgz after install")
-    .option("--no-keep", "do not keep downloaded .tgz after install")
-    .option("--force", "force re-download even if file exists")
-    .option("--retry <n>", "download retry count", (v) => parseInt(v, 10))
-    .option(
-      "--out <path>",
-      "write .tgz directly to the given path (no node_modules prefix)"
-    )
-    .option("--pnpm-cmd <cmd>", "(deprecated) pnpm command to run")
-    .option("--pm-cmd <cmd>", "package manager command to run (npm|pnpm|yarn)")
-    .option("--proxy <url>", "HTTP(S) proxy URL")
-    .option("-q, --quiet", "quiet mode")
-    .option("--no-pretty", "disable pretty (colored/shortened) output")
-    .allowUnknownOption(false);
-
-  program.parse(process.argv);
-  const raw = program.opts();
-  const pretty = raw.pretty === undefined ? true : raw.pretty;
-  const logger = makeLogger(raw.quiet, pretty);
-
-  const pkg = raw.package || process.env.MOTION_PACKAGE || "motion-plus";
-  const version =
-    raw.pkgVersion || raw.pkgVersion === ""
-      ? raw.pkgVersion
-      : raw.pkgVersion || process.env.MOTION_VERSION || "2.0.0-alpha.4";
-  const token = raw.token || process.env.MOTION_TOKEN;
-  if (!token) {
-    logger.error(
-      "Error: MOTION_TOKEN is not set in the environment and --token not provided."
-    );
-    process.exitCode = 2;
-    return;
-  }
-
-  const storageSubdir =
-    raw.storage ||
-    process.env.MOTION_STORAGE_SUBDIR ||
-    ".motion-plus-installer";
-  const fileName = `${pkg}-${version}.tgz`;
-
-  let outPath;
-  if (raw.out) {
-    outPath = path.resolve(process.cwd(), raw.out);
-  } else {
-    const storageDir = path.resolve(
-      process.cwd(),
-      "node_modules",
-      storageSubdir
-    );
-    outPath = path.join(storageDir, fileName);
-  }
-
-  const headers = { Authorization: `Bearer ${token}` };
-  // Masked log of token presence
-  logger.info(`Authorization header: Bearer ${"****"}`);
-
-  const registryBase =
-    process.env.MOTION_REGISTRY_URL || "https://api.motion.dev/registry";
-  const url = buildUrl(pkg, version, registryBase);
-  logger.info(`Using storage: ${logger.fmtPath(path.dirname(outPath))}`);
-  logger.info(`Target file: ${logger.fmtPath(outPath)}`);
-  logger.info(`Download URL: ${logger.fmtPath(url)}`);
-
-  // proxy handling: set env vars for fetch/https and child processes
-  if (raw.proxy) {
-    process.env.HTTP_PROXY = raw.proxy;
-    process.env.HTTPS_PROXY = raw.proxy;
-    logger.info(`Proxy set`);
-  }
-
+  // fallback to cwd
   try {
-    const exists = await fs.promises
-      .stat(outPath)
-      .then(() => true)
-      .catch(() => false);
-    if (exists && !raw.force) {
-      logger.info(
-        `Found existing file at ${logger.fmtPath(
-          outPath
-        )}, skipping download (use --force to re-download)`
-      );
-    } else {
-      // download with retries
-      const attempts = Math.max(1, raw.retry || 2);
-      let lastErr = null;
-      for (let i = 1; i <= attempts; i++) {
-        try {
-          const tmpPath = `${outPath}.tmp-${Date.now()}`;
-          logger.info(`Downloading (attempt ${i}/${attempts}) ...`);
-          await downloadToFile(url, headers, tmpPath, outPath);
-          logger.info(`Saved ${logger.fmtPath(outPath)}`);
-          lastErr = null;
-          break;
-        } catch (er: any) {
-          lastErr = er;
-          logger.warn(`Download attempt ${i} failed: ${er.message}`);
-          if (i === attempts) break;
-          // small delay before retry
-          await new Promise((r) => setTimeout(r, 1000 * i));
-        }
-      }
-      if (lastErr) {
-        logger.error(
-          `Download failed after ${attempts} attempts: ${lastErr.message}`
-        );
-        process.exitCode = 3;
-        return;
-      }
+    const cwdCandidate = path.join(process.cwd(), "package.json");
+    if (fs.existsSync(cwdCandidate)) {
+      return JSON.parse(fs.readFileSync(cwdCandidate, "utf8"));
     }
-
-    // Decide package manager: CLI option > legacy pnpm-cmd > auto-detect
-    const selectedPm = raw.pmCmd || raw.pnpmCmd || detectPackageManager(process.cwd());
-    logger.info(`Using package manager: ${selectedPm}`);
-    try {
-      await runPackageManagerAdd(selectedPm, outPath, logger);
-    } catch (er: any) {
-      logger.error(`package manager failed: ${er.message}`);
-      process.exitCode = 5;
-      return;
-    }
-
-    logger.info("motion-plus installed successfully.");
-    const keep = raw.keep === undefined ? true : raw.keep;
-    if (!keep) {
-      try {
-        await fs.promises.unlink(outPath);
-        logger.info(`Removed ${logger.fmtPath(outPath)}`);
-      } catch (er: any) {
-        logger.warn(`Failed to remove downloaded file: ${er.message}`);
-      }
-    } else {
-      logger.info(`Kept downloaded file at ${logger.fmtPath(outPath)}`);
-    }
-    process.exitCode = 0;
-  } catch (err: any) {
-    logger.error("Installation failed:", err.message || err);
-    process.exitCode = 1;
+  } catch (e) {
+    // ignore
   }
+  throw new Error("package.json not found");
 }
 
-main();
+const pkgJson = loadPackageJsonFromDir(__dirname);
+program.name("motion-plus-installer");
+// If user asked for version via -V/--version, print once and exit to avoid
+// duplicate printing from downstream wrapper or commander internals.
+const rawArgs = process.argv.slice(2);
+if (rawArgs.includes("-V") || rawArgs.includes("--version")) {
+  console.log(pkgJson.version || "0.0.0");
+  process.exit(0);
+}
+
+program.version(pkgJson.version || "0.0.0", "-V, --version", "output the CLI version");
+
+// install サブコマンド: 引数に <pkg>@<version> を受け取る
+program
+  .command("install [pkgWithVersion]")
+  .alias("i")
+  .description(
+    "Download and install a Motion+ package. Use <pkg>@<version> format."
+  )
+  .option("-s, --storage <subdir>", "storage subdir under node_modules")
+  .option("-t, --token <token>", "Authorization Bearer token")
+  .option("--keep", "keep downloaded .tgz after install")
+  .option("--no-keep", "do not keep downloaded .tgz after install")
+  .option("--force", "force re-download even if file exists")
+  .option("--retry <n>", "download retry count", (v) => parseInt(v, 10))
+  .option(
+    "--out <path>",
+    "write .tgz directly to the given path (no node_modules prefix)"
+  )
+  .option("--pm-cmd <cmd>", "package manager command to run (npm|pnpm|yarn)")
+  .option("--proxy <url>", "HTTP(S) proxy URL")
+  .option("-q, --quiet", "quiet mode")
+  .option("--no-pretty", "disable pretty (colored/shortened) output")
+  .option(
+    "-a, --allow-default",
+    "when omitted, allow falling back to the default package `motion-plus@latest`"
+  )
+  .allowUnknownOption(false)
+  .action(async (pkgWithVersion: string | undefined, cmdObj: any) => {
+    // Commander may pass either the Command object (with .opts())
+    // or the plain options object depending on version/build.
+    const opts =
+      typeof cmdObj?.opts === "function" ? cmdObj.opts() : cmdObj || {};
+
+    // Determine package and version with precedence:
+    // 1. CLI argument `pkg@version` (if provided)
+    // 2. Environment variables `MOTION_PACKAGE` / `MOTION_VERSION` (if set)
+    // 3. Fallback to `motion-plus@latest`
+    let pkg: string | undefined;
+    let version: string | undefined;
+
+    if (pkgWithVersion) {
+      // parse pkg@version, handle scoped packages like @scope/name@1.2.3
+      const atPos = pkgWithVersion.lastIndexOf("@");
+      if (atPos > 0) {
+        pkg = pkgWithVersion.slice(0, atPos);
+        version = pkgWithVersion.slice(atPos + 1) || undefined;
+      } else {
+        pkg = pkgWithVersion;
+      }
+    } else {
+      // No argument: prefer environment
+      pkg = process.env.MOTION_PACKAGE;
+      version = process.env.MOTION_VERSION;
+
+      // If environment not set, only allow using the hardcoded default when
+      // the caller explicitly requested it via `--allow-default`.
+      if (!pkg) {
+        const allowDefault = !!opts.allowDefault;
+        if (allowDefault) {
+          pkg = "motion-plus";
+          version = version || "latest";
+        } else {
+          console.error(
+            "Error: missing package argument. Use format: <pkg>@<version> (e.g. motion-plus@latest)"
+          );
+          console.error("You can either:");
+          console.error("  - specify the package on the command line: motion-plus-installer install motion-plus@latest");
+          console.error("  - set environment variable MOTION_PACKAGE (and optionally MOTION_VERSION)");
+          console.error("  - or pass --allow-default to install the default: motion-plus@latest");
+          process.exit(1);
+        }
+      }
+    }
+
+    opts.package = pkg;
+    opts.pkgVersion = version || "latest";
+    await installFlow(opts);
+  });
+
+// clear-cache サブコマンド: ストレージのキャッシュを削除する
+program
+  .command("clear-cache")
+  .alias("cc")
+  .description(
+    "Remove cached .tgz files in storage directory (or remove dir with --all)"
+  )
+  .option("-s, --storage <subdir>", "storage subdir under node_modules")
+  .option("--all", "remove entire storage directory")
+  .option("-q, --quiet", "quiet mode")
+  .action(async (cmdObj: any) => {
+    const opts =
+      typeof cmdObj?.opts === "function" ? cmdObj.opts() : cmdObj || {};
+    const storageDir = storageDirFor(process.cwd(), opts.storage);
+    const logger = makeLogger(opts.quiet, true);
+    try {
+      const exists = await fs.promises
+        .stat(storageDir)
+        .then(() => true)
+        .catch(() => false);
+      if (!exists) {
+        logger.info(`No cache found at ${logger.fmtPath(storageDir)}`);
+        return;
+      }
+      if (opts.all) {
+        await fs.promises.rm(storageDir, { recursive: true, force: true });
+        logger.info(`Removed storage directory ${logger.fmtPath(storageDir)}`);
+        return;
+      }
+      const files = await fs.promises.readdir(storageDir);
+      const tgz = files.filter((f) => f.endsWith(".tgz"));
+      if (tgz.length === 0) {
+        logger.info(`No .tgz files in ${logger.fmtPath(storageDir)}`);
+        return;
+      }
+      for (const f of tgz) {
+        const p = path.join(storageDir, f);
+        try {
+          await fs.promises.unlink(p);
+          logger.info(`Removed ${logger.fmtPath(p)}`);
+        } catch (e: any) {
+          logger.warn(`Failed to remove ${f}: ${e.message || e}`);
+        }
+      }
+    } catch (e: any) {
+      logger.error(`Failed to clear cache: ${e.message || e}`);
+      process.exitCode = 1;
+    }
+  });
+
+// デフォルト: 引数が無ければヘルプ表示
+if (!process.argv.slice(2).length) {
+  program.outputHelp();
+  process.exit(0);
+}
+
+// Prevent commander from printing errors by itself (we'll handle them centrally)
+program.configureOutput({
+  // Don't let commander write to stderr automatically
+  writeErr: (_str: string) => {},
+  // Prevent default error formatting/printing
+  outputError: (_str: string, _write: (s: string) => void) => {},
+});
+
+// Override default exit behavior to provide friendlier error messages
+program.exitOverride();
+try {
+  program.parse(process.argv);
+} catch (err: any) {
+  // If install subcommand was invoked without required argument, show clearer hint
+  const invoked = (process.argv.slice(2)[0] || "").toLowerCase();
+  if (
+    err &&
+    (err.code === "commander.missingArgument" || err.code === "commander.helpDisplayed") &&
+    (invoked === "install" || invoked === "i")
+  ) {
+    console.error("Error: missing package argument. Use format: <pkg>@<version> (e.g. motion-plus@latest)");
+    console.error("Example:");
+    console.error("  motion-plus-installer install motion-plus@latest");
+    console.error("  motion-plus-installer i motion-plus@latest");
+    process.exit(1);
+  }
+
+  // For other commander errors, show the original message and exit with its code
+  if (err && typeof err.exitCode === "number") {
+    console.error(err.message || err);
+    process.exit(err.exitCode);
+  }
+
+  // Unknown error: rethrow
+  throw err;
+}

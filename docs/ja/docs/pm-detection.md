@@ -28,54 +28,59 @@
 - 実行可能ファイルの有無チェック:
   - ローカル環境に `pnpm`/`yarn`/`bun` がインストールされているか `--version` 実行で確認します。
 
-## 明示的に指定する（推奨）
-
+::: tip 推奨
 自動検出が期待通りでない場合や CI 環境で確実に特定のマネージャーを使いたい場合は、CLI オプション `--pm-cmd <cmd>` を指定してください（例: `--pm-cmd pnpm`）。
+:::
 
 ::: code-group
 
 ```sh [pnpm]
 # pnpm を使う例
-pnpm dlx motion-plus-installer --pm-cmd pnpm -p motion-plus -v 2.0.0
+pnpm dlx motion-plus-installer i motion-plus --pm-cmd pnpm
 ```
 
 ```sh [npm]
 # npm を使う例
-npx motion-plus-installer --pm-cmd npm -p motion-plus -v 2.0.0
+npx motion-plus-installer i motion-plus --pm-cmd npm
 ```
 
 ```sh [yarn]
 # yarn を使う例
-yarn dlx motion-plus-installer --pm-cmd yarn -p motion-plus -v 2.0.0
+yarn dlx motion-plus-installer i motion-plus --pm-cmd yarn
 ```
 
 :::
 
-## 実行後に実際に呼ばれるコマンド（内部）
-
+::: details 実行後に呼ばれるコマンド
 インストーラは検出したマネージャーに応じて以下のように `.tgz` をプロジェクトに追加します。
 
 - `pnpm`, `yarn` の場合: `pnpm add ./path/to/file.tgz` / `yarn add ./path/to/file.tgz`
 - `npm` の場合: `npm install ./path/to/file.tgz`
 
-（内部では、指定した `--pm-cmd` の先頭トークンをコマンド名として解析し、サブコマンドは上記のように組み立てられます。）
+(内部では、指定した `--pm-cmd` の先頭トークンをコマンド名として解析し、サブコマンドは上記のように組み立てられます。）
 
-## CI の運用上の注意
+:::
 
-- CI では環境が固定されているため、明示的に `--pm-cmd` を指定することを推奨します。特に `node` イメージやランナーが複数のパッケージマネージャを含む場合、検出結果が変わることがあります。
-- 例（GitHub Actions）:
+::: warning CI の注意
+CI では環境が固定されているため、明示的に `--pm-cmd` を指定することを推奨します。特に `node` イメージやランナーが複数のパッケージマネージャを含む場合、検出結果が変わることがあります。
+
+例（GitHub Actions）:
 
 ```yaml
 - name: Install Motion package
-  run: npx motion-plus-installer --pm-cmd pnpm -p motion-plus -v 2.0.0
+  run: npx motion-plus-installer i motion-plus --pm-cmd pnpm
   env:
     MOTION_TOKEN: ${{ secrets.MOTION_TOKEN }}
 ```
 
-## トラブルシュートのヒント
+:::
 
-- 検出結果を知りたい場合は、`--pm-cmd <cmd>` を指定して明示的に実行ログを確認してください。
-- まれに、`npm_config_user_agent` が空で `package.json` に `packageManager` が設定されていないと、グローバルにインストールされた `pnpm` が優先される場合があります。CI では `--pm-cmd` 指定で回避できます。
+::: tip トラブルシュート
+検出結果を知りたい場合は、`--pm-cmd <cmd>` を指定して明示的に実行ログを確認してください。
+
+まれに、`npm_config_user_agent` が空で `package.json` に `packageManager` が設定されていないと、グローバルにインストールされた `pnpm` が優先される場合があります。CI では `--pm-cmd` 指定で回避できます。
+
+:::
 
 ---
 

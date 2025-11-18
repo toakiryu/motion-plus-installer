@@ -26,35 +26,35 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      website_changed: ${{ steps.check_website.outputs.website_changed }}
+      docs_changed: ${{ steps.check_docs.outputs.docs_changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Not needed if lastUpdated is not enabled
-      # Quick check: has anything under `website/` changed? If not, skip build.
-      - name: Check website changes
-        id: check_website
+      # Quick check: has anything under `docs/` changed? If not, skip build.
+      - name: Check docs changes
+        id: check_docs
         run: |
           echo "event=${{ github.event_name }}"
           # On manual dispatch, force deploy
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "website_changed=true" >> $GITHUB_OUTPUT
-            echo "Manual workflow_dispatch: forcing website deploy"
+            echo "docs_changed=true" >> $GITHUB_OUTPUT
+            echo "Manual workflow_dispatch: forcing docs deploy"
             exit 0
           fi
           # If this is a new branch/comparison baseline missing, treat as changed
           if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
-            echo "website_changed=true" >> $GITHUB_OUTPUT
+            echo "docs_changed=true" >> $GITHUB_OUTPUT
             exit 0
           fi
-          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- website || true)
+          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- docs || true)
           if [ -n "$CHANGED" ]; then
-            echo "website_changed=true" >> $GITHUB_OUTPUT
-            echo "Website changed:\n$CHANGED"
+            echo "docs_changed=true" >> $GITHUB_OUTPUT
+            echo "docs changed:\n$CHANGED"
           else
-            echo "website_changed=false" >> $GITHUB_OUTPUT
-            echo "No changes under website/ detected; build will be skipped."
+            echo "docs_changed=false" >> $GITHUB_OUTPUT
+            echo "No changes under docs/ detected; build will be skipped."
           fi
       # - uses: pnpm/action-setup@v4 # Uncomment this block if you're using pnpm
       #   with:
@@ -79,41 +79,41 @@ jobs:
             pnpm-store-${{ runner.os }}-
       - name: Setup Pages
         uses: actions/configure-pages@v4
-      - name: Install dependencies (website)
-        if: steps.check_website.outputs.website_changed == 'true'
+      - name: Install dependencies (docs)
+        if: steps.check_docs.outputs.docs_changed == 'true'
         run: pnpm install --frozen-lockfile
-        working-directory: website
+        working-directory: docs
 
-      - name: Build with VitePress (website)
-        if: steps.check_website.outputs.website_changed == 'true'
+      - name: Build with VitePress (docs)
+        if: steps.check_docs.outputs.docs_changed == 'true'
         run: pnpm docs:build
-        working-directory: website
+        working-directory: docs
 
       # Verify build output exists before attempting to archive/upload
       - name: Check build artifact exists
         id: check_artifact
-        if: steps.check_website.outputs.website_changed == 'true'
+        if: steps.check_docs.outputs.docs_changed == 'true'
         run: |
-          if [ -d website/.vitepress/dist ]; then
+          if [ -d docs/.vitepress/dist ]; then
             echo "artifact_exists=true" >> $GITHUB_OUTPUT
-            echo "Build artifact found: website/.vitepress/dist"
+            echo "Build artifact found: docs/.vitepress/dist"
           else
             echo "artifact_exists=false" >> $GITHUB_OUTPUT
-            echo "Build artifact not found: website/.vitepress/dist"
+            echo "Build artifact not found: docs/.vitepress/dist"
           fi
 
       - name: Warn missing artifact
-        if: steps.check_website.outputs.website_changed == 'true' && steps.check_artifact.outputs.artifact_exists == 'false'
+        if: steps.check_docs.outputs.docs_changed == 'true' && steps.check_artifact.outputs.artifact_exists == 'false'
         run: |
-          echo "ERROR: build succeeded but artifact directory website/.vitepress/dist is missing."
-          echo "Ensure 'pnpm docs:build' produces files under website/.vitepress/dist"
+          echo "ERROR: build succeeded but artifact directory docs/.vitepress/dist is missing."
+          echo "Ensure 'pnpm docs:build' produces files under docs/.vitepress/dist"
           exit 1
 
       - name: Upload artifact
-        if: steps.check_website.outputs.website_changed == 'true' && steps.check_artifact.outputs.artifact_exists == 'true'
+        if: steps.check_docs.outputs.docs_changed == 'true' && steps.check_artifact.outputs.artifact_exists == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: website/.vitepress/dist
+          path: docs/.vitepress/dist
 
   # Deployment job
   deploy:
@@ -121,7 +121,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     needs: build
-    if: needs.build.outputs.website_changed == 'true'
+    if: needs.build.outputs.docs_changed == 'true'
     runs-on: ubuntu-latest
     name: Deploy
     steps:

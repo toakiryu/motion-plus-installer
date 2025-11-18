@@ -34,6 +34,7 @@ export default defineConfig({
 
   locales: {
     root: { label: "日本語", lang: "ja-JP", dir: "ltr" },
+    en: { label: "English", lang: "en-US", dir: "ltr" },
   },
 
   markdown: {
@@ -61,7 +62,7 @@ export default defineConfig({
         })();
         return fence(tokens, idx, options, env, self).replace(
           '<button title="Copy Code" class="copy"></button>',
-          `<button title="${codeCopyButtonTitle}" class="copy"></button>`,
+          `<button title="${codeCopyButtonTitle}" class="copy"></button>`
         );
       };
       md.use(groupIconMdPlugin);
@@ -90,15 +91,15 @@ export default defineConfig({
         customIcon: {
           vitepress: localIconLoader(
             import.meta.url,
-            "../public/motion-inst.1500x1500.png",
+            "../public/motion-inst.1500x1500.png"
           ),
           firebase: "logos:firebase",
         },
       }),
-        llmstxt({
-          workDir: "ja",
-          ignoreFiles: ["index.md"],
-        }),
+      llmstxt({
+        workDir: "ja",
+        ignoreFiles: ["index.md"],
+      }),
     ],
   },
 
@@ -106,14 +107,14 @@ export default defineConfig({
     ? (pageData, ctx) => {
         const site = resolveSiteDataByRoute(
           ctx.siteConfig.site,
-          pageData.relativePath,
+          pageData.relativePath
         );
         const title = `${pageData.title || site.title} | ${
           pageData.description || site.description
         }`;
         ((pageData.frontmatter.head ??= []) as HeadConfig[]).push(
           ["meta", { property: "og:locale", content: site.lang }],
-          ["meta", { property: "og:title", content: title }],
+          ["meta", { property: "og:title", content: title }]
         );
       }
     : undefined,

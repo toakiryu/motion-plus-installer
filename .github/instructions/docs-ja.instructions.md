@@ -1,5 +1,5 @@
 ---
-applyTo: "website/ja/**"
+applyTo: "docs/ja/**/*.md"
 ---
 
 # VitePress ドキュメントサイト

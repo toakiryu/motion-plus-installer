@@ -23,11 +23,11 @@ npm install --save-dev motion-plus-installer
 ::: code-group
 
 ```sh [pnpm]
-pnpm dlx motion-plus-installer -p motion-plus -v 2.0.0
+pnpm dlx motion-plus-installer i motion-plus@latest
 ```
 
 ```sh [npm]
-npx motion-plus-installer -p motion-plus -v 2.0.0
+npx motion-plus-installer motion-plus@latest
 ```
 
 :::
@@ -41,11 +41,11 @@ $env:MOTION_TOKEN = 'your-token'
 ::: code-group
 
 ```sh [pnpm]
-pnpm dlx motion-plus-installer
+pnpm dlx motion-plus-installer i motion-plus@latest
 ```
 
 ```sh [npm]
-npx motion-plus-installer
+npx motion-plus-installer i motion-plus@latest
 ```
 
 :::
@@ -55,11 +55,11 @@ npx motion-plus-installer
 ::: code-group
 
 ```sh [pnpm]
-pnpm dlx dotenv-cli -e .env -- pnpm dlx motion-plus-installer
+pnpm dlx dotenv-cli -e .env -- pnpm dlx motion-plus-installer i motion-plus@latest
 ```
 
 ```sh [npm]
-npx dotenv-cli -e .env -- npx motion-plus-installer
+npx dotenv-cli -e .env -- npx motion-plus-installer i motion-plus@latest
 ```
 
 :::
@@ -72,16 +72,20 @@ npx dotenv-cli -e .env -- npx motion-plus-installer
 - name: Run installer
   env:
     MOTION_TOKEN: ${{ secrets.MOTION_TOKEN }}
-  run: npx motion-plus-installer -p motion-plus -v 2.0.0
+  run: npx motion-plus-installer i motion-plus@latest
 ```
 
-### 注意点
+::: warning 注意
 
-- `MOTION_TOKEN` は機密情報です。CI ではシークレットとして保存してください。[トークンノート](#token-note)
+- `MOTION_TOKEN` は機密情報です。CI ではシークレットとして保存してください（トークンノート参照）。
 - `.tgz` の扱い（`--keep` / `--no-keep`）に注意してください。
 
-#### トークンノート {#token-note}
+:::
+
+::: details トークンノート {#token-note}
 
 ローカル検証では `.env` を使うことが便利ですが、本番や CI では必ずシークレットストアを利用してください。
+
+:::
 
 詳細は [CLI リファレンス](./cli-reference) と [環境変数と設定](./configuration) を参照してください。

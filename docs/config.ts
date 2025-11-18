@@ -33,8 +33,39 @@ export default defineAdditionalConfig({
       message: "MIT ライセンスの下で公開されています。",
       copyright: "Copyright © 2025-present Toa Kiryu",
     },
+
+    notFound: {
+      title: "ページが見つかりません",
+      quote:
+        "お探しのページは削除されたか、名前が変更されたか、一時的に利用できない可能性があります。",
+      linkLabel: "ホームへ戻る",
+      linkText: "ホームへ戻る",
+      code: "404",
+    },
   },
 });
+
+function searchOptions(): Partial<DefaultTheme.LocalSearchOptions> {
+  return {
+    translations: {
+      button: {
+        buttonText: "検索",
+        buttonAriaLabel: "検索",
+      },
+      modal: {
+        footer: {
+          selectText: "選択",
+          selectKeyAriaLabel: "Enter キー",
+          navigateText: "移動",
+          navigateUpKeyAriaLabel: "上矢印キー",
+          navigateDownKeyAriaLabel: "下矢印キー",
+          closeText: "閉じる",
+          closeKeyAriaLabel: "Esc キー",
+        },
+      },
+    },
+  };
+}
 
 function nav(): DefaultTheme.NavItem[] {
   return [
@@ -42,6 +73,16 @@ function nav(): DefaultTheme.NavItem[] {
       text: "ドキュメント",
       link: "/docs/what-is-motion-inst",
       activeMatch: "/docs/",
+    },
+    {
+      text: "リソース",
+      items: [
+        { text: "貢献者", link: "/contributors" },
+        {
+          text: "ディスカッション",
+          link: "https://github.com/toakiryu/motion-plus-installer/discussions",
+        },
+      ],
     },
     {
       text: pkg.version,
@@ -95,26 +136,4 @@ function sidebarDocs(): DefaultTheme.SidebarItem[] {
       ],
     },
   ];
-}
-
-function searchOptions(): Partial<DefaultTheme.LocalSearchOptions> {
-  return {
-    translations: {
-      button: {
-        buttonText: "検索",
-        buttonAriaLabel: "検索",
-      },
-      modal: {
-        footer: {
-          selectText: "選択",
-          selectKeyAriaLabel: "Enter キー",
-          navigateText: "移動",
-          navigateUpKeyAriaLabel: "上矢印キー",
-          navigateDownKeyAriaLabel: "下矢印キー",
-          closeText: "閉じる",
-          closeKeyAriaLabel: "Esc キー",
-        },
-      },
-    },
-  };
 }

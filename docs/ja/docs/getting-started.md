@@ -12,7 +12,7 @@ CI では `MOTION_TOKEN` をシークレットとして保存し、ビルド手�
 
 ```yaml [install.yml]
 - name: Install Motion packages
-  run: npx motion-plus-installer
+  run: npx motion-plus-installer i motion-plus
   env:
     MOTION_TOKEN: ${{ secrets.MOTION_TOKEN }}
 ```

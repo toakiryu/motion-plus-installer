@@ -1,0 +1,12 @@
+project_identifier: "motion-plus-installer"
+base_path: .
+preserve_hierarchy: true
+
+files:
+  - source: "docs/ja/**/*.md"
+    translation: "docs/%locale%/%original_path%"
+    ignore:
+      - "docs/ja/_plan.md"
+
+  - source: "README/ja.md"
+    translation: "README/%locale%/%original_path%"
