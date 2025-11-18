@@ -4,13 +4,13 @@ base_path: .
 preserve_hierarchy: true
 
 files:
-  - source: "docs/config.ts"
-    translation: "docs/%two_letters_code%/config.ts"
+  - source: "/docs/config.ts"
+    translation: "/docs/%two_letters_code%/config.ts"
 
-  - source: "docs/ja/**/*.md"
-    translation: "docs/%two_letters_code%/%original_file_name%"
+  - source: "/docs/ja/**/*.md"
+    translation: "/docs/%two_letters_code%/**/*%original_file_name%"
     ignore:
-      - "docs/ja/_plan.md"
+      - "/docs/ja/_plan.md"
 
-  - source: "README/ja.md"
-    translation: "README/%two_letters_code%.md"
+  - source: "/README/ja.md"
+    translation: "/README/%two_letters_code%.md"
