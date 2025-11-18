@@ -1,0 +1,44 @@
+name: Crowdin sync
+
+on:
+  push:
+    paths:
+      - 'docs/**'
+      - 'README/**'
+  workflow_dispatch:
+
+jobs:
+  # Minimal workflow for repositories using the Crowdin GitHub App.
+  # When the Crowdin GitHub App is installed and configured for the project,
+  # Crowdin will typically push translation PRs back to the repository itself.
+  # This job provides a manual entry point and guidance; it does not require
+  # a personal Crowdin API token.
+  sync_with_app:
+    name: Crowdin (GitHub App) — manual helper
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Info: Crowdin GitHub App"
+        run: |
+          echo "This repository is connected to Crowdin via the GitHub App."
+          echo "Translations are usually synced by Crowdin directly (the App will open PRs)."
+          echo "Use the 'Manual: run Crowdin CLI' step (workflow_dispatch) to run CLI commands from CI if needed."
+
+      - name: Setup Node (for optional CLI)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: "Manual: show Crowdin CLI version (optional)"
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          pnpm dlx @crowdin/cli --version || npx @crowdin/cli --version
+          echo "To upload/download from CI you may need a Crowdin API token;"
+          echo "alternatively let the Crowdin GitHub App handle automatic syncs." 
+
+# Notes:
+# - This workflow uses a personal API token stored in the repository secret `CROWDIN_PERSONAL_TOKEN`.
+# - If you prefer the Crowdin GitHub App (recommended for finer permissions), remove the token and
+#   follow Crowdin's guide to configure the App; the Action can be adjusted accordingly.

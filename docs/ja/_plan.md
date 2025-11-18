@@ -10,7 +10,7 @@ VitePress 公式のテンプレートでは、`./guide/*.md` と `./reference/*.
 
 ## ドキュメントを更新した場合
 
-`website\config.ts` の `defineAdditionalConfig.sidebar` を更新してください。
+`docs\config.ts` の `defineAdditionalConfig.sidebar` を更新してください。
 
 ## 作成予定のページ
 

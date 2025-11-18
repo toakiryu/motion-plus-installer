@@ -4,14 +4,14 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "pnpm --stream '/^(website:)?dev$/'",
-    "docs:dev": "wait-on -d 100 dist/node/cli.js && pnpm -F=website dev",
+    "docs": "pnpm --stream '/^(docs:)?dev$/'",
+    "docs:dev": "wait-on -d 100 dist/node/cli.js && pnpm -F=docs dev",
     "docs:debug": "NODE_OPTIONS='--inspect-brk' pnpm docs:dev",
     "docs:build": "pnpm build && pnpm docs:build:only",
-    "docs:build:only": "pnpm -F=website build",
-    "docs:preview": "pnpm -F=website preview",
-    "docs:lunaria:build": "pnpm -F=website lunaria:build",
-    "docs:lunaria:open": "pnpm -F=website lunaria:open"
+    "docs:build:only": "pnpm -F=docs build",
+    "docs:preview": "pnpm -F=docs preview",
+    "docs:lunaria:build": "pnpm -F=docs lunaria:build",
+    "docs:lunaria:open": "pnpm -F=docs lunaria:open"
   },
   "keywords": [],
   "author": "",

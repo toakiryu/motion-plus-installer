@@ -2,7 +2,8 @@
   "$schema": "./node_modules/@lunariajs/core/config.schema.json",
   "repository": {
     "name": "toakiryu/motion-plus-installer",
-    "rootDir": "website"
+    "rootDir": "docs",
+    "branch": "main"
   },
   "files": [
     {
