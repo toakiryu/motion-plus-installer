@@ -1,4 +1,5 @@
 project_identifier: "motion-plus-installer"
+project_id: 847296
 base_path: .
 preserve_hierarchy: true
 
@@ -6,13 +7,10 @@ files:
   - source: "docs/config.ts"
     translation: "docs/%two_letters_code%/config.ts"
 
-  - base_path: "docs/ja"
-    source: "**/*.md"
-    # Preserve docs subdirectory structure by making original path relative to docs/ja
-    translation: "docs/%two_letters_code%/%original_path%"
+  - source: "docs/ja/**/*.md"
+    translation: "docs/%two_letters_code%/%original_file_name%"
     ignore:
-      - "_plan.md"
-      - "config.ts"
+      - "docs/ja/_plan.md"
 
   - source: "README/ja.md"
     translation: "README/%two_letters_code%.md"
