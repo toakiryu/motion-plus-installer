@@ -27,34 +27,34 @@
 
 # Motion Plus Installer
 
-Motion Plus Installer is a lightweight CLI tool that fetches distribution `.tgz` files for Motion from an authenticated API and installs them into your project. By default it prefers `pnpm`, but it also supports `npm` and other package managers and lets you explicitly choose one with the `--pm-cmd` option.
+Motion Plus Installer is a lightweight CLI tool that fetches distribution `.tgz` files for Motion from an authenticated API and installs them into your project.By default it prefers `pnpm`, but it also supports `npm` and other package managers and lets you explicitly choose one with the `--pm-cmd` option.
 
-## Background
+## 作成経緯
 
-This tool was created to reduce manual steps when distributing Motion packages internally or to customers. Instead of downloading `.tgz` files by hand and adding them into projects, this CLI automates fetching authenticated packages and installing them, improving reproducibility and enabling CI workflows.
+This tool was created to reduce manual steps when distributing Motion packages internally or to customers.Instead of downloading `.tgz` files by hand and adding them into projects, this CLI automates fetching authenticated packages and installing them, improving reproducibility and enabling CI workflows.
 
 Key motivations:
 
-- Reduce human error when downloading or selecting package versions
+- 手動ダウンロードのミスを減らす（バージョン違いやパスの取り違えなど）
 - Make CI integration and automation easier
 - Improve reproducibility and offline resilience by caching downloaded `.tgz` files
 
 ## Supported package managers
 
-| Package manager |                 Support | Verified | Notes                                                   |
-| --------------- | ----------------------: | :------: | ------------------------------------------------------- |
-| `pnpm`          | Recommended / preferred |    ◎     | Preferred by default; most thoroughly tested.           |
-| `npm`           |               Supported |    〇    | Can be selected as a fallback depending on detection.   |
-| `yarn`          |               Supported |    △     | Behavior may differ between Classic and Berry.          |
-| `bun`           |            Experimental |    ×     | Detected if `bun` is on PATH; compatibility is limited. |
+| Package manager |                 Support | Verified | 備考                                                                                   |
+| --------------- | ----------------------: | :------: | ------------------------------------------------------------------------------------ |
+| `pnpm`          | Recommended / preferred |     ◎    | デフォルトで優先されます。最も検証された選択肢です。                                                           |
+| `npm`           |               Supported |     〇    | Can be selected as a fallback depending on detection.                |
+| `yarn`          |               Supported |     △    | Behavior may differ between Classic and Berry.                       |
+| `bun`           |            Experimental |     ×    | Detected if `bun` is on PATH; compatibility is limited.互換性に注意してください。 |
 
-_See the ["Package manager auto-detection"](https://motion-inst.oss.toaki.cc/docs/pm-detection) section for detection behavior._
+_See the ["Package manager auto-detection"](https://motion-inst.oss.toaki.cc/docs/pm-detection) section for detection behavior.__
 
 ## Benefits
 
 - Simple: one command downloads the authenticated package and installs it into your project using the selected package manager (pnpm is preferred by default).
 - Safe: tokens are passed via environment variables and token values are not printed to logs.
-- CI-friendly: works with secrets and provides `--pm-cmd` to explicitly choose a package manager when desired. If not specified, the CLI attempts to auto-detect the manager from the environment and repository.
+- CI-friendly: works with secrets and provides `--pm-cmd` to explicitly choose a package manager when desired.If not specified, the CLI attempts to auto-detect the manager from the environment and repository.
 - Reproducible: cached `.tgz` files enable consistent installs and offline usage.
 - Lightweight: designed to run in Node environments without heavy external dependencies; package manager is auto-detected or selectable via `--pm-cmd`.
 
