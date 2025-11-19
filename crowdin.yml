@@ -4,8 +4,15 @@ base_path: .
 preserve_hierarchy: true
 
 files:
-  - source: "/docs/config.ts"
-    translation: "/docs/%two_letters_code%/config.ts"
+  # Exclude the VitePress per-language config file from automatic Crowdin sync.
+  # Reason (日本語):
+  # このファイル（`/docs/config.ts`）にはサイトの theme/sidebar 設定が含まれており、
+  # Crowdin がこれを各言語ディレクトリ（例: `/docs/en/config.ts`）へ同期すると
+  # ローカルで言語ごとに保守している設定を上書きしてしまいます。
+  # 特に sidebar のパスが固定で "/docs/" になり、翻訳ごとの正しいベースパス
+  # （例: "/en/docs/"）が壊れるため、同期対象から除外します。
+  #- source: "/docs/config.ts"
+  #  translation: "/docs/%two_letters_code%/config.ts"
 
   - source: "/docs/ja/**/*.md"
     translation: "/docs/%two_letters_code%/**/%original_file_name%"
