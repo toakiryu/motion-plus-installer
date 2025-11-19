@@ -1,6 +1,6 @@
-# よくある質問
+# Frequently Asked Questions
 
 :::tip
-近日公開
+Coming Soon
 
 :::
