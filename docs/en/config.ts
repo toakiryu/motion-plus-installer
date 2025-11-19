@@ -61,8 +61,8 @@ function searchOptions(): Partial<DefaultTheme.LocalSearchOptions> {
 function nav(): DefaultTheme.NavItem[] {
   return [{
     text: "Documentation",
-    link: "/en/docs/what-is-motion-inst",
-    activeMatch: "/en/docs/"
+    link: "/docs/what-is-motion-inst",
+    activeMatch: "/docs/"
   }, {
     text: "Resources",
     items: [{
