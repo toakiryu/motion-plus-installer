@@ -1,6 +1,6 @@
-# CI 連携例
+# CI Integration Examples
 
 :::tip
-近日公開
+Coming Soon
 
 :::
