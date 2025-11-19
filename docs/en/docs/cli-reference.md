@@ -1,14 +1,14 @@
-# CLI リファレンス
+# CLI Reference
 
-このページは `motion-plus-installer` CLI の主要オプションと使用例をまとめたリファレンスです。
+This page provides a consolidated reference for major options and usage examples of the `motion-plus-installer` CLI.
 
-## 基本
+## Basics
 
 :::tip
-ローカルにインストールしている場合は `./node_modules/.bin/motion-plus-installer` を直接利用できます。グローバルにインストールしている場合は `motion-plus-installer --help` で確認してください。
+If installed locally, you can invoke `./node_modules/.bin/motion-plus-installer` directly.If installed globally, run `motion-plus-installer --help` to check availability.
 :::
 
-この CLI はサブコマンド方式を採用しています。インストール操作は `install`（エイリアス `i`）サブコマンドを使って明示的に実行してください。
+This CLI follows a subcommand-based design.Installation operations must be executed explicitly using the `install` (alias: `i`) subcommand.
 
 ## サブコマンドと主なオプション
 
