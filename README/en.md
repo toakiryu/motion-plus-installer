@@ -46,7 +46,7 @@ Key motivations:
 | `pnpm`          | Recommended / preferred |     ◎    | デフォルトで優先されます。最も検証された選択肢です。                                                           |
 | `npm`           |               Supported |     〇    | Can be selected as a fallback depending on detection.                |
 | `yarn`          |               Supported |     △    | Behavior may differ between Classic and Berry.                       |
-| `bun`           |            Experimental |     ×    | Detected if `bun` is on PATH; compatibility is limited.互換性に注意してください。 |
+|                 |            Experimental |     ×    | Detected if `bun` is on PATH; compatibility is limited.互換性に注意してください。 |
 
 _See the ["Package manager auto-detection"](https://motion-inst.oss.toaki.cc/docs/pm-detection) section for detection behavior.__
 
