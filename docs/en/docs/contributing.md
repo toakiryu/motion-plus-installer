@@ -1,6 +1,6 @@
-# コントリビュート方法
+# How to Contribute
 
 :::tip
-近日公開
+Coming Soon
 
 :::
