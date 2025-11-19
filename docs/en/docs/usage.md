@@ -1,8 +1,8 @@
-# 利用方法 {#usage}
+# Usage {#usage}
 
-ここではエンドユーザー向けの実例を示します。
+This section provides practical examples for end users.
 
-## 開発依存としてインストール
+## Install as a development dependency
 
 ::: code-group
 
@@ -18,7 +18,7 @@ npm install --save-dev motion-plus-installer
 
 :::
 
-## 一時的に実行（npx / dlx）
+## Run temporarily (npx / dlx)
 
 ::: code-group
 
@@ -32,7 +32,7 @@ npx motion-plus-installer motion-plus@latest
 
 :::
 
-## 環境変数（PowerShell の例）
+## Environment variables (PowerShell example)
 
 ```sh [PowerShell ~vscode-icons:file-type-powershell~]
 $env:MOTION_TOKEN = 'your-token'
@@ -50,7 +50,7 @@ npx motion-plus-installer i motion-plus@latest
 
 :::
 
-## ENV を使う（dotenv-cli）
+## Using ENV files (dotenv-cli)
 
 ::: code-group
 
@@ -64,7 +64,7 @@ npx dotenv-cli -e .env -- npx motion-plus-installer i motion-plus@latest
 
 :::
 
-## CI 例（GitHub Actions）
+## CI Example (GitHub Actions)
 
 ```yaml
 - name: Install CLI
@@ -75,17 +75,17 @@ npx dotenv-cli -e .env -- npx motion-plus-installer i motion-plus@latest
   run: npx motion-plus-installer i motion-plus@latest
 ```
 
-:::warning 注意
+:::warning Warning
 
-- `MOTION_TOKEN` は機密情報です。CI ではシークレットとして保存してください（トークンノート参照）。
-- `.tgz` の扱い（`--keep` / `--no-keep`）に注意してください。
-
-:::
-
-:::details トークンノート {#token-note}
-
-ローカル検証では `.env` を使うことが便利ですが、本番や CI では必ずシークレットストアを利用してください。
+- `MOTION_TOKEN` is sensitive information.In CI environments, store it as a secret (see Token Notes).
+- Be mindful of how `.tgz` files are handled (`--keep `/` --no-keep`).
 
 :::
 
-詳細は [CLI リファレンス](./cli-reference) と [環境変数と設定](./configuration) を参照してください。
+:::details Token Notes {#token-note}
+
+Using `.env` is convenient for local testing, but in production or CI you must rely on a secret store.
+
+:::
+
+For more details, see the [CLI Reference](./cli-reference) and [Environment Variables & Configuration](./configuration).
