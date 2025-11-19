@@ -10,64 +10,64 @@ If installed locally, you can invoke `./node_modules/.bin/motion-plus-installer`
 
 This CLI follows a subcommand-based design.Installation operations must be executed explicitly using the `install` (alias: `i`) subcommand.
 
-## サブコマンドと主なオプション
+## Subcommands and Key Options
 
-- **install** (`i`): 指定パッケージをダウンロードしてインストールします。引数は `pkg@version` 形式で指定します（例: `motion-plus@latest`）。
+- **install** (`i`): Downloads and installs the specified package.Arguments must follow the `pkg@version` format (e.g., `motion-plus@latest`).
 
-  - オプション（サブコマンドに付与）:
-    - `-s, --storage <subdir>`: ダウンロードキャッシュの保存先（`node_modules` 内のサブディレクトリ）。デフォルト: `.motion-plus-installer`
-    - `-t, --token <token>`: API へ渡す Bearer トークン（未指定の場合は環境変数 `MOTION_TOKEN` を参照。未設定だと実行時にエラーになります）。
-    - `--keep` / `--no-keep`: ダウンロードした `.tgz` を保持する / 削除する（デフォルト: `--keep`）。
-    - `--force`: 既存キャッシュを上書きして再ダウンロードする（デフォルト: false）。
-    - `--retry <n>`: ダウンロードの再試行回数（デフォルト: `2`）。
-    - `--out <path>`: ダウンロードした `.tgz` を指定パスへ直接出力する（`node_modules` の自動接頭なし）。
-    - `--pm-cmd <cmd>`: 使用するパッケージマネージャコマンドを明示（例: `pnpm`, `npm`, `yarn`）。未指定時は自動検出します。
-    - `--proxy <url>`: HTTP(S) プロキシを指定（実行時に `HTTP_PROXY` / `HTTPS_PROXY` 環境変数も設定されます）。
-    - `-q, --quiet`: ログ出力を抑えて最小化する。
-    - `--no-pretty`: 色付けやパス短縮などの「見た目」機能を無効化する。
+  - Options (applied to the subcommand):
+    - `-s, --storage <subdir>`: (Subdirectory inside `node_modules`) used for download caching.Default: `.motion-plus-installer`
+    - `-t, --token <token>`: Bearer token for API calls. (If omitted, the `MOTION_TOKEN` environment variable is used.Execution fails if neither is set).
+    - `--keep` / `--no-keep`: Retain or delete downloaded `.tgz` files (default: `--keep`).
+    - `--force`: Overwrite existing cache and re-download (default: false).
+    - `--retry <n>`: Number of retry attempts for downloads (default: `2`).
+    - `--out <path>`: Output downloaded `.tgz` directly to the specified path (without auto-prefixing inside `node_modules`).
+    - `--pm-cmd <cmd>`: Explicit package manager command (e.g., `pnpm`, `npm`, `yarn`).Auto-detected if omitted.
+    - `--proxy <url>`: Specify an HTTP(S) proxy. (Automatically sets `HTTP_PROXY` / `HTTPS_PROXY` during execution).
+    - `-q, --quiet`: Minimize log output.
+    - `--no-pretty`: Disable formatting features like color and path shortening.
 
-  ::: warning 高度なオプション
+  ::: warning Advanced Option
 
-  `-a, --allow-default`: 引数も環境変数も指定されていない場合に限り、デフォルトの `motion-plus@latest` へフォールバックします。通常は使用しないでください。CI などで自動化する場合にのみ明示的に指定してください。
+  `-a, --allow-default`: Falls back to `motion-plus@latest` **only when neither arguments nor environment variables are provided**.Avoid using this unless requiredfor automation scenarios such as CI.
 
   :::
 
-- **clear-cache** (`cc`): ダウンロードキャッシュ（`.tgz`）を削除します。
-  - オプション:
-    - `-s, --storage <subdir>`: 対象ストレージを指定（既定: `.motion-plus-installer`）。
-    - `--all`: ストレージディレクトリを丸ごと削除する（再帰削除）。
-    - `-q, --quiet`: ログ出力を抑える。
+- **clear-cache** (`cc`): Deletes cached download artifacts (`.tgz`).
+  - Options:
+    - `-s, --storage <subdir>`: Target storage (default: `.motion-plus-installer`).
+    - `--all`: Remove the entire storage directory recursively.
+    - `-q, --quiet`: Suppress log output.
 
-その他の共通オプション（グローバル）:
+Other (global) options:
 
-- `-V, --version`: CLI のバージョンを表示します。
-- `-h, --help`: ヘルプを表示します（commander 標準）。
+- `-V, --version`: Display the CLI version.
+- `-h, --help`: Show help output (commander standard).
 
-## 実行前の確認
+## Pre-execution Checklist
 
-- `MOTION_TOKEN` を用意していることを確認してください。`install` 実行時に `--token` を指定するか、環境変数 `MOTION_TOKEN` を設定してください。
-- 対象パッケージは `pkg@version` 形式で指定します。バージョンを省略したい場合は `latest` を指定してください（例: `motion-plus@latest`）。
-- CI 環境では `MOTION_TOKEN` をシークレットに登録してください。
+- Ensure that `MOTION_TOKEN` is available.Specify it via `--token` or set the `MOTION_TOKEN` environment variable.
+- Specify target packages in `pkg@version` format.Use `latest` to omit version numbers (e.g., `motion-plus@latest`).
+- In CI environments, store `MOTION_TOKEN` as a secret.
 
-詳細な環境変数や設定方法については [環境変数と設定](./configuration) を参照してください。
+For details on environment variables and configuration, refer to [Environment Variables & Configuration](./configuration).
 
-## 実行例
+## Usage Examples
 
-- 最新（latest）をインストール:
+- Install the latest version:
 
 ```sh
 motion-plus-installer install motion-plus@latest
-# 省略形
+# Short form
 motion-plus-installer i motion-plus@latest
 ```
 
-- 特定バージョンをインストール:
+- Install a specific version:
 
 ```sh
 motion-plus-installer install motion-plus@2.0.0-alpha.5
 ```
 
-- キャッシュを削除（デフォルトストレージ内の .tgz を削除）:
+- Clear cache (delete `.tgz` files from default storage):
 
 ```sh
 motion-plus-installer clear-cache
