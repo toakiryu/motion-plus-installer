@@ -15,7 +15,7 @@ export default defineAdditionalConfig({
       options: searchOptions()
     },
     sidebar: {
-      "/docs/": {
+      "/en/docs/": {
         base: "/en/docs/",
         items: sidebarDocs()
       }
