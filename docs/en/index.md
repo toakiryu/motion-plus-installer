@@ -3,14 +3,14 @@ layout: home
 
 hero:
   name: Motion Inst
-  text: Motion+ パッケージをインストールする軽量 CLI
-  tagline: 安全にパッケージを取得してインストール
+  text: Lightweight CLI to install Motion+ packages
+  tagline: Securely fetch and install packages
   actions:
     - theme: brand
-      text: Motion Inst とは？
+      text: What is Motion Inst?
       link: ./docs/what-is-motion-inst
     - theme: alt
-      text: クイックスタート
+      text: Quick Start
       link: ./docs/getting-started
     - theme: alt
       text: GitHub
@@ -21,15 +21,15 @@ hero:
 
 features:
   - icon: ⚙️
-    title: インストールを自動化
-    details: Motion+ パッケージの取得とインストール手順を自動化し、手動での冗長な操作を削減します。
+    title: Automate installation
+    details: Automates retrieval and installation of Motion+ packages, reducing manual and repetitive steps.
   - icon: 🔒
-    title: 安全性を重視
-    details: ダウンロード元の検証や署名/チェックサムの確認など、安全にパッケージを取得する仕組みを提供します。
+    title: Security-focused
+    details: Provides mechanisms such as source verification and signature/checksum validation to obtain packages safely.
   - icon: ⚡
-    title: 軽量で高速
-    details: 余計な依存を避けた小さなバイナリで、迅速にインストール処理を行います。
+    title: Lightweight & fast
+    details: A small binary with minimal dependencies for fast execution in CI and scripts.
   - icon: 🧭
-    title: 使いやすいCLI
-    details: シンプルなコマンドと設定で、スクリプトや CI に組み込みやすい操作性を実現します。
+    title: User-friendly CLI
+    details: Simple commands and configuration make it easy to integrate into scripts and CI workflows.
 ---
