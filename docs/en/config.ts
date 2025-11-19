@@ -61,13 +61,13 @@ function searchOptions(): Partial<DefaultTheme.LocalSearchOptions> {
 function nav(): DefaultTheme.NavItem[] {
   return [{
     text: "Documentation",
-    link: "/docs/what-is-motion-inst",
+    link: "/en/docs/what-is-motion-inst",
     activeMatch: "/docs/"
   }, {
     text: "Resources",
     items: [{
       text: "Contributing",
-      link: "/contributors"
+      link: "/en/contributors"
     }, {
       text: "Discussion",
       link: "https://github.com/toakiryu/motion-plus-installer/discussions"
