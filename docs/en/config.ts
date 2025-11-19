@@ -3,7 +3,7 @@
  * en: This configuration file defines additional settings for the default language (ja). Settings for other languages should be specified in `config.ts` at the root of each language-specific directory.
  */
 
-import { createRequire } from "vitepress";
+import { createRequire } from "module";
 import { defineAdditionalConfig, type DefaultTheme } from "vitepress";
 const require = createRequire(import.meta.url);
 const pkg = require("motion-plus-installer/package.json");
@@ -16,7 +16,7 @@ export default defineAdditionalConfig({
     },
     sidebar: {
       "/docs/": {
-        base: "/docs/",
+        base: "/en/docs/",
         items: sidebarDocs()
       }
     },
@@ -64,21 +64,21 @@ function nav(): DefaultTheme.NavItem[] {
     link: "/en/docs/what-is-motion-inst",
     activeMatch: "/en/docs/"
   }, {
-    text: "リソース",
+    text: "Resources",
     items: [{
-      text: "Changelog",
-      link: "https://github.com/toakiryu/motion-plus-installer/blob/main/CHANGELOG.md"
-    }, {
       text: "Contributing",
-      link: "https://github.com/toakiryu/motion-plus-installer/blob/main/.github/contributing.md"
+      link: "/contributors"
+    }, {
+      text: "Discussion",
+      link: "https://github.com/toakiryu/motion-plus-installer/discussions"
     }]
   }, {
     text: pkg.version,
     items: [{
-      text: "更新履歴",
+      text: "Changelog",
       link: "https://github.com/toakiryu/motion-plus-installer/blob/main/CHANGELOG.md"
     }, {
-      text: "コントリビュート方法",
+      text: "How to Contribute",
       link: "https://github.com/toakiryu/motion-plus-installer/blob/main/.github/contributing.md"
     }]
   }];
