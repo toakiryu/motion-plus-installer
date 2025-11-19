@@ -1,42 +1,42 @@
-# Motion Inst とは何ですか？ {#what-is-motion-inst}
+# What is Motion Inst? {#what-is-motion-inst}
 
-Motion Inst は、Motion+ パッケージ群を安全かつ簡単に取得・インストールするための軽量なインストーラ／ランタイム補助ツールです。開発者や CI ワークフロー向けに設計され、手動での複雑な手順や依存関係の扱いを自動化します。
+Motion Inst is a lightweight installer and runtime utility designed to safely and easily fetch and install the Motion+ package suite.It is built for developers and CI workflows, automating complex manual steps and dependency handling.
 
 :::tip
-まずは試してみたい？ [クイックスタート](./getting-started) へどうぞ。
+Want to try it right away? Visit the [Quick Start](./getting-started).
 
 :::
 
-## 目的
+## Purpose
 
-- パッケージの取得とインストール手順を自動化して開発者の負担を減らす
-- ダウンロード元とアーティファクトの検証を導入してセキュリティを高める
-- 軽量で移植しやすい CLI を提供し、スクリプト／CI へ組み込みやすくする
+- Automate package retrieval and installation procedures to reduce developer overhead
+- Strengthen security by validating download sources and artifacts
+- Provide a lightweight, portable CLI that integrates well with scripts and CI pipelines
 
-## 主な特徴
+## Key Features
 
-- インストール自動化: 複数の Motion+ パッケージを一括で取得・展開し、必要なフックを呼び出します。
-- セキュリティ重視: 署名やチェックサム検証のフローを想定しており、改ざん検知や信頼できる配布経路の利用を支援します。
-- 軽量: 依存を最小限に抑えた実装により、CI やスクリプト内で高速に動作します。
-- CLI フレンドリー: シンプルなコマンド体系で手動操作と自動化の両方に適します。
+- Automated installation: Fetches and extracts multiple Motion+ packages at once and invokes required hooks.
+- Security-focused: Designed with signature and checksum verification flows in mind to detect tampering and ensure trusted distribution paths.
+- Lightweight: Minimal dependencies enable fast execution in CI and scripting environments.
+- CLI-friendly: A simple command structure suitable for both manual use and automation.
 
-## 想定ユースケース
+## Intended Use Cases
 
-- 開発マシンでの素早いセットアップ（例: 開発用ツールやテンプレートの導入）
-- CI/CD パイプラインでのパッケージ取得とインストール自動化
-- オフラインやミラー配布環境での安全な配布ワークフロー
+- Rapid setup on development machines (e.g., installing tooling or templates)
+- Automated package retrieval and installation in CI/CD pipelines
+- Secure distribution workflows in offline or mirrored environments
 
-## 設定とカスタマイズ
+## Configuration and Customization
 
-- Motion Inst は設定ファイルや環境変数で挙動をカスタマイズできるよう設計されています。ダウンロード先、キャッシュの場所、検証方法（署名/チェックサム）などをプロジェクトごとに調整してください。
+- Motion Inst can be customized via configuration files and environment variables.Adjust settings such as download destinations, cache locations, and verification methods (signatures/checksums) per project requirements.
 
-## セキュリティについて
+## Security Considerations
 
-- 常に公式の配布元や署名済みアーティファクトを優先して利用してください。
-- CI での実行時はキャッシュと検証を組み合わせ、不正なアーティファクトが混入しないようにしてください。
+- Always use official distribution sources and signed artifacts when available.
+- In CI environments, combine caching with verification to prevent the introduction of malicious artifacts.
 
-## 貢献とフィードバック
+## Contributions and Feedback
 
-- 不具合や改善要望は GitHub リポジトリの Issue や Pull Request で受け付けています。ドキュメントや例が不足している場合もお気軽に報告してください。
+- Bug reports and feature requests are welcome via Issues or Pull Requests on the GitHub repository.Please report if documentation or examples feel insufficient as well.
 
-詳細は [利用方法](./usage)、[CLI リファレンス](./cli-reference)、[環境変数と設定](./configuration) を参照してください。
+For more details, see the [Usage Guide](./usage), [CLI Reference](./cli-reference), and [Environment Variables & Configuration](./configuration).
