@@ -1,14 +1,14 @@
-# クイックスタート {#getting-started}
+# Quick Start {#getting-started}
 
-このページでは、`motion-plus-installer` のインストールと基本的な使い方を示します。
+This page explains how to install and use `motion-plus-installer` at a basic level.
 
-## 実行例（参照）
+## Example Usage (Reference)
 
-このページの具体的なコマンド例（`npx` / `pnpm dlx`、`.env` を使った実行、CI スニペットなど）は重複を避けるためサイトの [利用方法](./usage) ページにまとめています。
+To avoid duplication, concrete command examples on this site—such as using (`npx` / `pnpm dlx`, executing with `.env`, and CI snippets—are) consolidated on the [Usage](./usage) page.
 
-## CI での利用
+## Using in CI
 
-CI では `MOTION_TOKEN` をシークレットとして保存し、ビルド手順の中で `npx motion-plus-installer` を呼び出してください。例（GitHub Actions のステップ）:
+In CI environments, store `MOTION_TOKEN` as a secret, and invoke `npx motion-plus-installer` during your build steps.Example (GitHub Actions step):
 
 ```yaml [install.yml]
 - name: Install Motion packages
@@ -17,8 +17,8 @@ CI では `MOTION_TOKEN` をシークレットとして保存し、ビルド手�
     MOTION_TOKEN: ${{ secrets.MOTION_TOKEN }}
 ```
 
-## パッケージマネージャーの明示
+## Explicit Package Manager Specification
 
-自動検出が上手くいかない場合は、`--pm-cmd <cmd>` オプションで実行コマンドを明示できます。簡単な例や置換例は [利用方法](./usage) にあります。
+If automatic detection does not work properly, you can explicitly provide the command using the `--pm-cmd <cmd>` option.Simple examples and substitution patterns can be found in the [Usage](./usage) page.
 
-詳細は [CLI リファレンス](./cli-reference) と [パッケージマネージャ検出](./pm-detection) を参照してください。
+For details, refer to the [CLI Reference](./cli-reference) and [Package Manager Detection](./pm-detection).
