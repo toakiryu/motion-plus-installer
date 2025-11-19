@@ -1,6 +1,6 @@
 {
   "name": "motion-plus-installer",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0",
   "description": "Lightweight CLI to install Motion+ packages",
   "bin": {
     "motion-plus-installer": "dist/cjs/installer.js",
