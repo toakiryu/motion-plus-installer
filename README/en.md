@@ -2,7 +2,9 @@
   <picture>
     <img width="150" src="https://raw.githubusercontent.com/toakiryu/motion-plus-installer/refs/heads/main/assets/images/motion-inst.1500x1500.png" alt="Motion Inst Logo">
   </picture>
-  <h2 align="center">Motion Inst</h2>
+  <h2 align="center">
+    Motion Inst
+  </h2>
   <p align="center">
     Lightweight CLI to install Motion+ packages
     <br />
