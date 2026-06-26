@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> A guide has finally been added to the official documentation! This project has been archived, and there are no plans to resume it.
+> https://motion.dev/docs/react-installation
+
 <p align="center">
   <picture>
     <img width="150" src="https://raw.githubusercontent.com/toakiryu/motion-plus-installer/refs/heads/main/assets/images/motion-inst.1500x1500.png" alt="Motion Inst Logo">
